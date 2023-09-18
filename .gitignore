@@ -1,0 +1,8 @@
+# Ignorar arquivos do projeto
+.env
+yarn.lock
+yarn-error.log
+
+# Ignorar diretórios do projeto
+/build
+/node_modules
