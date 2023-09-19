@@ -1,7 +1,9 @@
 # Ignorar arquivos do projeto
 .env
+*.sqlite
 yarn.lock
 yarn-error.log
+
 
 # Ignorar diretórios do projeto
 /build

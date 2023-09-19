@@ -9,17 +9,36 @@
         "dev": "ts-node-dev --transpile-only ./src/index.ts",
         "test": "",
         "build": "tsc",
-        "start": "node ./build/index.js"
+        "start": "node ./build/index.js",
+        "knex:make:seed": "knex --knexfile ./src/server/database/knex/AmbienteKnex.ts seed:make",
+        "knex:make:migrate": "knex --knexfile ./src/server/database/knex/AmbienteKnex.ts migrate:make",
+        "knex:seed": "knex --knexfile ./src/server/database/knex/AmbienteKnex.ts seed:run",
+        "knex:migrate": "knex --knexfile ./src/server/database/knex/AmbienteKnex.ts migrate:latest",
+        "knex:rollback": "knex --knexfile ./src/server/database/knex/AmbienteKnex.ts migrate:rollback",
+        "knex:rollback-all": "knex --knexfile ./src/server/database/knex/AmbienteKnex.ts migrate:rollback --all"
     },
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "dotenv": "^16.3.1",
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "http-status-codes": "^2.2.0",
+        "jsonwebtoken": "^9.0.2",
+        "knex": "^2.5.1",
+        "shortid": "^2.2.16",
+        "yup": "^1.2.0"
     },
     "devDependencies": {
+        "@types/bcryptjs": "^2.4.4",
         "@types/express": "^4.17.17",
+        "@types/http-status-codes": "^1.2.0",
+        "@types/jsonwebtoken": "^9.0.3",
+        "@types/knex": "^0.16.1",
+        "@types/shortid": "^0.0.29",
+        "@types/yup": "^0.32.0",
         "@typescript-eslint/eslint-plugin": "^6.7.0",
         "@typescript-eslint/parser": "^6.7.0",
         "eslint": "^8.49.0",
+        "sqlite3": "^5.1.6",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.2.2"
     }

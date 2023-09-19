@@ -6,8 +6,8 @@ import { rotiador } from './routes';
 
 const servidor = express();
 servidor.use(express.json());
-servidor.use('/api', rotiador);
 servidor.use(express.urlencoded({ extended: true }));
+servidor.use('/api', rotiador);
 
 
 export { servidor };
