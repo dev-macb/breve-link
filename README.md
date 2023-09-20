@@ -10,9 +10,6 @@
     meu encurtador de URLs de forma consistente. Ele serve como uma ferramenta essencial 
     para simplificar links longos e compartilhá-los de maneira mais conveniente.
 </p>
-<p align="center">
-    <a href="https://dev-macb.github.io">Visitar</a>
-</p>
 <p align="center">🔷</p>
 
 
