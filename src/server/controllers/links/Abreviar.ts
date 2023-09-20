@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { LinkModel } from '../../database/models';
 import { ValidarConsulta } from '../../middlewares';
 import { LinkProvider } from '../../database/providers/links';
+import { URLService } from '../../services';
 
 
 interface IBodyProps extends Omit<LinkModel, 'id_link' | 'url_curta' | 'acessos' | 'expira_em' | 'criado_em' | 'atualizado_em'> { }
@@ -19,6 +20,7 @@ const validarAbreviar = ValidarConsulta((obterEsquema) => ({
 
 const abreviar = async(request: Request<{}, {}, IBodyProps>, response: Response) => {
     const dados: IBodyProps = request.body;
+    if (!URLService.validar(dados.url_original)) return response.status(StatusCodes.BAD_REQUEST).json({ erro: 'URL inválida' });
 
     const resultado = await LinkProvider.abreviar(dados);
 

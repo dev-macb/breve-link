@@ -10,7 +10,7 @@ const rotiador = Router();
 rotiador.post('/links', autorizacao, LinkController.validarNovo, LinkController.novo);
 rotiador.put('/links/:id', autorizacao, LinkController.validarEditar, LinkController.editar);
 rotiador.delete('/links/:id', autorizacao, LinkController.validarExcluir, LinkController.excluir);
-rotiador.get('/links', autorizacao, LinkController.validarBuscarTodos, LinkController.buscarTodos);
+rotiador.get('/links', LinkController.validarBuscarTodos, LinkController.buscarTodos);
 rotiador.get('/links/:id', autorizacao, LinkController.validarBuscarPorId, LinkController.buscarPorId);
 
 

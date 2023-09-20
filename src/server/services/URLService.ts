@@ -1,3 +1,5 @@
+// Declaração de constantes
+const regex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$|^www\.[^\s/$.?#].[^\s]*$/;
 const caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 
@@ -12,4 +14,9 @@ const gerar = (tamanho: number): string => {
 };
 
 
-export const URLService = { gerar };
+const validar = (url: string): boolean => {
+    return regex.test(url);
+};
+
+
+export const URLService = { gerar, validar };   
