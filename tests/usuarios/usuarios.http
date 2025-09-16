@@ -1,0 +1,48 @@
+# usuarios
+
+### obterTodos
+GET http://localhost:3000/usuarios
+Authorization: Bearer token
+
+### obterPorId
+GET http://localhost:3000/usuarios/1
+Authorization: Bearer token
+
+### cadastrar
+POST http://localhost:3000/usuarios
+Authorization: Bearer token
+Content-Type: application/json
+
+{
+    "nome": "Taaaaaaaaaaaaa",
+    "email": "teste@email.com",
+    "senha": "Senha!23",
+    "ativo": true,
+    "administrador": true
+}
+
+### atualizar
+PATCH http://localhost:3000/usuarios/1
+Authorization: Bearer token
+Content-Type: application/json
+
+{
+    "nome": "Taaaa",
+    "email": "teste@email.com",
+    "senha": "Senha!23",
+    "ativo": true,
+    "administrador": true
+}
+
+### remover
+DELETE http://localhost:3000/usuarios/4
+Authorization: Bearer token
+
+### entrar
+POST http://localhost:3000/usuarios/entrar
+Content-Type: application/json
+
+{
+    "email": "administrador@email.com",
+    "senha": "Senha@123"
+}
