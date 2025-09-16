@@ -7,7 +7,7 @@ const iniciarServidor = () => {
     console.log('╔╗ ┬─┐┌─┐┬  ┬┌─┐  ╦  ┬┌┐┌┬┌─');
     console.log('╠╩╗├┬┘├┤ └┐┌┘├┤   ║  ││││├┴┐');
     console.log('╚═╝┴└─└─┘ └┘ └─┘  ╩═╝┴┘└┘┴ ┴');
-    console.log('@dev_macb             v1.0.0\n');
+    console.log('@dev_macb             v1.1.0\n');
 
     if (process.env.NODE_ENV === 'producao') {
         console.log('[*] Rodando migrations...');
