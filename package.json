@@ -7,7 +7,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "ts-node-dev --transpile-only ./src/index.ts",
-        "test": "",
+        "test": "jest",
         "build": "tsc",
         "start": "node ./build/index.js",
         "knex:make:seed": "knex --knexfile ./src/config/knex/Ambiente.ts seed:make",

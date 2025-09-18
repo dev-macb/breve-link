@@ -1,1 +1,2 @@
-export * from './UsuarioRoutes';
+export * from './LinkRouter';
+export * from './UsuarioRouter';

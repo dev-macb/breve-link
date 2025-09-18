@@ -5,8 +5,15 @@ export const TIPOS = {
     IJwtUtil: Symbol('IJwtUtil'),
     IHashUtil: Symbol('IHashUtil'),
 
+    LinkController: Symbol('LinkController'),
     UsuarioController: Symbol('UsuarioController'),
+
+    ILinkValidator: Symbol('ILinkValidator'),
     IUsuarioValidator: Symbol('IUsuarioValidator'),
+
+    ILinkService: Symbol('ILinkService'),
     IUsuarioService: Symbol('IUsuarioService'),
-    IUsuarioRepository: Symbol('IUsuarioRepository'),  
+    
+    ILinkRepository: Symbol('ILinkRepository'),
+    IUsuarioRepository: Symbol('IUsuarioRepository'),
 };

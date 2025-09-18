@@ -1,9 +1,10 @@
 import { Knex } from 'knex';
+import { ETabela } from '../enums';
 
 
 async function up(knex: Knex): Promise<void> {
     return knex.schema
-        .createTable('usuarios', tabela => {
+        .createTable(ETabela.usuarios, tabela => {
             tabela.bigIncrements('id').primary().index();
             tabela.string('nome', 30).notNullable(),
             tabela.string('email', 200).notNullable().unique().index();
@@ -21,7 +22,7 @@ async function up(knex: Knex): Promise<void> {
 
 async function down(knex: Knex): Promise<void> {
     return knex.schema
-        .dropTable('usuarios')
+        .dropTable(ETabela.usuarios)
         .then(() => { console.log(`[*] A tabela "usuarios" foi deletada.`); });
 }
 

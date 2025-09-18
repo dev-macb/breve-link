@@ -32,8 +32,14 @@ class UsuarioService implements IUsuarioService {
     }
 
     async cadastrar(cadastrarUsuarioDto: CadastrarUsuarioDto): Promise<Usuario> {
+        if (cadastrarUsuarioDto.email) {
+            const emailEmUso = await this.usuarioRepository.obterPorEmail(cadastrarUsuarioDto.email);
+            if (emailEmUso) {
+                throw new Error("Email já registrado");
+            }
+        }
+
         const novoUsuario = await this.usuarioRepository.cadastrar(cadastrarUsuarioDto);
-        
         if (!novoUsuario) {
             throw new Error("Falha ao cadastrar usuário");
         }

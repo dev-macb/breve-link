@@ -1,5 +1,5 @@
 import { IFiltros } from '../common/IFiltros';
-import { Usuario, CadastrarUsuarioDto, AtualizarUsuarioDto } from '../../models/Usuario';
+import { Usuario, CadastrarUsuarioDto, AtualizarUsuarioDto } from '../../models';
 
 export interface IUsuarioRepository {
     obterTodos(filtros: IFiltros): Promise<Usuario[]>;

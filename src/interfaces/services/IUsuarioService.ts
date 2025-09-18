@@ -1,7 +1,8 @@
-import { Usuario, CadastrarUsuarioDto, AtualizarUsuarioDto, EntrarUsuarioDto } from '../../models/Usuario';
 import { IFiltros } from '../common/IFiltros';
+import { Usuario, CadastrarUsuarioDto, AtualizarUsuarioDto, EntrarUsuarioDto } from '../../models/Usuario';
 
-export interface IUsuarioService {
+
+interface IUsuarioService {
     obterTodos(filtros: IFiltros): Promise<Usuario[]>;
     obterPorId(id: number): Promise<Usuario | null>;
     cadastrar(usuarioDto: CadastrarUsuarioDto): Promise<Usuario>;
@@ -9,3 +10,6 @@ export interface IUsuarioService {
     remover(id: number): Promise<Usuario | null>;
     entrar(credenciais: EntrarUsuarioDto): Promise<string | null>;
 }
+
+
+export { IUsuarioService };
