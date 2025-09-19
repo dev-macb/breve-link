@@ -10,7 +10,7 @@ const usuarioRouter = Router();
 const usuarioController = container.get<UsuarioController>(TIPOS.UsuarioController);
 const usuarioValidator = container.get<IUsuarioValidator>(TIPOS.IUsuarioValidator);
 
-usuarioRouter.post('/entrar', usuarioValidator.obterTodos(), usuarioController.entrar.bind(usuarioController));
+usuarioRouter.post('/entrar', usuarioValidator.entrar(), usuarioController.entrar.bind(usuarioController));
 usuarioRouter.get('/', AutenticacaoMiddleware.Administrador, usuarioValidator.obterTodos(), usuarioController.obterTodos.bind(usuarioController));
 usuarioRouter.get('/:id', AutenticacaoMiddleware.Administrador, usuarioValidator.obterPorId(), usuarioController.obterPorId.bind(usuarioController));
 usuarioRouter.post('/', AutenticacaoMiddleware.Administrador, usuarioValidator.cadastrar(), usuarioController.cadastrar.bind(usuarioController));

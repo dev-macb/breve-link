@@ -3,6 +3,7 @@
 *.sqlite
 yarn.lock
 yarn-error.log
+package-lock.json
 
 
 # Ignorar diretórios do projeto

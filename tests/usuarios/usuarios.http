@@ -1,16 +1,16 @@
 # usuarios
 
 ### obterTodos
-GET http://localhost:3000/usuarios
-Authorization: Bearer token
+GET http://localhost:3000/usuarios?filtro=oioi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
 
 ### obterPorId
 GET http://localhost:3000/usuarios/1
-Authorization: Bearer token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
 
 ### cadastrar
 POST http://localhost:3000/usuarios
-Authorization: Bearer token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 ### atualizar
 PATCH http://localhost:3000/usuarios/1
-Authorization: Bearer token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
 Content-Type: application/json
 
 {

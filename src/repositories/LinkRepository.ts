@@ -1,6 +1,7 @@
 import { ETabela } from '../enums';
 import { Knex } from '../config/knex';
 import { injectable } from 'inversify';
+import { logger } from '../config/Logger';
 import { IFiltros, ILinkRepository } from '../interfaces';
 import { AtualizarLinkDto, CadastrarLinkDto, Link } from '../models';
 
@@ -11,7 +12,7 @@ class LinkRepository implements ILinkRepository {
         try {
             const propriedadeAlvo = 'urlCurta';
             const { pagina = 1, limite = 10, filtro = '' } = filtros;
-            
+
             return await Knex<Link>(ETabela.links)
                 .select('*')
                 .where(propriedadeAlvo, 'like', `%${filtro}%`)
@@ -19,28 +20,35 @@ class LinkRepository implements ILinkRepository {
                 .limit(limite);
         } 
         catch (erro: any) {
+            logger.error({ erro }, 'Erro ao obter todos os links');
             throw erro;
         }
     }
 
     async obterPorId(id: number): Promise<Link | null> {
         try {
-            return (await Knex<Link>(ETabela.links)
+            const link = await Knex<Link>(ETabela.links)
                 .where({ id })
-                .first()) || null;
+                .first() || null;
+
+            return link;
         } 
         catch (erro: any) {
+            logger.error({ erro, id }, 'Erro ao buscar link por ID');
             throw erro;
         }
     }
 
     async obterPorUrlCurta(urlCurta: string): Promise<Link | null> {
         try {
-            return await Knex<Link>(ETabela.links)
+            const link = await Knex<Link>(ETabela.links)
                 .where({ urlCurta })
                 .first() || null;
+
+            return link;
         } 
         catch (erro: any) {
+            logger.error({ erro, urlCurta }, 'Erro ao buscar link por URL curta');
             throw erro;
         }
     }
@@ -54,6 +62,7 @@ class LinkRepository implements ILinkRepository {
             return link || null;
         } 
         catch (erro: any) {
+            logger.error({ erro, cadastrarLinkDto }, 'Erro ao cadastrar link');
             throw erro;
         }
     }
@@ -68,6 +77,7 @@ class LinkRepository implements ILinkRepository {
             return link || null;
         } 
         catch (erro: any) {
+            logger.error({ erro, id, atualizarLinkDto }, 'Erro ao atualizar link');
             throw erro;
         }
     }
@@ -81,6 +91,7 @@ class LinkRepository implements ILinkRepository {
             return linksRemovidos > 0;
         } 
         catch (erro: any) {
+            logger.error({ erro, id }, 'Erro ao remover link');
             throw erro;
         }
     }

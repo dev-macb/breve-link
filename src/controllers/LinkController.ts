@@ -1,3 +1,4 @@
+import { logger } from '../config/Logger';
 import { Request, Response } from 'express';
 import { TIPOS } from '../config/Constantes';
 import { inject, injectable } from 'inversify';
@@ -27,6 +28,7 @@ class LinkController {
             return resposta.status(StatusCodes.OK).json(links);
         } 
         catch (erro: any) {
+            logger.error(erro, 'Erro ao buscar links');
             return resposta.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: erro.message });
         }
     }
@@ -37,12 +39,14 @@ class LinkController {
 
             const link = await this.linkService.obterPorId(id!);
             if (!link) {
-                return resposta.status(StatusCodes.NOT_FOUND).json({ error: 'Usuário não encontrado' });
+                logger.warn({ linkId: id }, 'Link não encontrado');
+                return resposta.status(StatusCodes.NOT_FOUND).json({ error: 'Link não encontrado' });
             }
             
             return resposta.status(StatusCodes.OK).json(link);
         } 
         catch (erro: any) {
+            logger.error(erro, 'Erro ao buscar link por ID');
             return resposta.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: erro.message });
         }
     }
@@ -56,6 +60,7 @@ class LinkController {
             return resposta.status(StatusCodes.CREATED).json(novoLink);
         } 
         catch (erro: any) {
+            logger.error(erro, 'Erro ao cadastrar link');
             return resposta.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: erro.message });
         }
     }
@@ -67,12 +72,14 @@ class LinkController {
 
             const linkAtualizado = await this.linkService.atualizar(id!, linkEditado);
             if (!linkAtualizado) {
+                logger.warn({ linkId: id }, 'Link não encontrado para atualização');
                 return resposta.status(StatusCodes.NOT_FOUND).json({ msg: 'Link não encontrado' });
             }
             
             return resposta.status(StatusCodes.OK).json(linkAtualizado);
         } 
         catch (erro: any) {
+            logger.error(erro, 'Erro ao atualizar link');
             return resposta.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: erro.message });
         }
     }
@@ -83,12 +90,14 @@ class LinkController {
 
             const linkRemovido = await this.linkService.remover(id!);
             if (!linkRemovido) {
-                return resposta.status(StatusCodes.NOT_FOUND).json({ msg: 'Usuário não encontrado' });
+                logger.warn({ linkId: id }, 'Link não encontrado para remoção');
+                return resposta.status(StatusCodes.NOT_FOUND).json({ msg: 'Link não encontrado' });
             }
             
             return resposta.status(StatusCodes.OK).json(linkRemovido);
         } 
         catch (erro: any) {
+            logger.error(erro, 'Erro ao remover link');
             return resposta.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: erro.message });
         }
     }
@@ -99,6 +108,7 @@ class LinkController {
             
             const link = await this.linkService.obterPorUrlCurta(dados.urlCurta!);
             if (!link) {
+                logger.warn({ urlCurta: dados.urlCurta }, 'URL curta não encontrada');
                 return resposta.status(StatusCodes.NOT_FOUND).json({ msg: 'UrlCurta não encontrada' });
             }
 
@@ -106,6 +116,7 @@ class LinkController {
             return resposta; 
         } 
         catch (erro: any) {
+            logger.error(erro, 'Erro no redirecionamento');
             return resposta.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: erro.message });
         }
     }

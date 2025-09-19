@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { logger } from '../config/Logger';
 import { StatusCodes } from 'http-status-codes';
 import { Maybe, AnyObject, ObjectSchema, ValidationError } from 'yup';
 
@@ -28,15 +29,20 @@ class YupMiddleware {
                 });
 
                 erroResultados[chave] = erros;
+                logger.warn(`Erros de validação em ${chave}`);
             }
         });
 
-        if (Object.entries(erroResultados).length === 0) return proximaFuncao();
-        else return resposta.status(StatusCodes.BAD_REQUEST).json({ erros: erroResultados });
+        if (Object.entries(erroResultados).length === 0) {
+            logger.info('Dados da requisição foram validados com sucesso');
+            return proximaFuncao();
+        } 
+        else {
+            logger.error('Falha na validação dos dados da requisição');
+            return resposta.status(StatusCodes.BAD_REQUEST).json({ erros: erroResultados });
+        }
     };
 }
-
-
 
 
 export { YupMiddleware };
