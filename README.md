@@ -1,5 +1,6 @@
 <h1 align="center">🔷 Breve Link 🔷</h1>
 
+<<<<<<< HEAD
 <p align="center">
     Um encurtador de URLs simples e eficiente construído com Node.js e TypeScript.
 </p>
