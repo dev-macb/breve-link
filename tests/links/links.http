@@ -1,0 +1,38 @@
+# Links
+
+### obterTodos
+GET http://localhost:3000/links
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjI1MDgxLCJleHAiOjE3NTgyMjg2ODF9.r_hCjH0FGrJ-0jHC9W9AZBs65tN_v8Tpc3X0bNuZBlE
+
+### obterPorId
+GET http://localhost:3000/links/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MDc0NTgyLCJleHAiOjE3NTgwNzgxODJ9.q9e0PfLOKpTgh77h_DmIzDfuO2PyT12ZVUwZ1YJD4FE
+
+### cadastrar
+POST http://localhost:3000/links
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MDc0NTgyLCJleHAiOjE3NTgwNzgxODJ9.q9e0PfLOKpTgh77h_DmIzDfuO2PyT12ZVUwZ1YJD4FE
+Content-Type: application/json
+
+{
+    "urlOriginal": "https://www.google.com",
+    "urlCurta": "google123",
+    "ativo": true
+}
+
+### atualizar
+PATCH http://localhost:3000/links/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MDc0NTgyLCJleHAiOjE3NTgwNzgxODJ9.q9e0PfLOKpTgh77h_DmIzDfuO2PyT12ZVUwZ1YJD4FE
+Content-Type: application/json
+
+{
+    "urlCurta": "novogoogle",
+    "ativo": false
+}
+
+### remover
+DELETE http://localhost:3000/links/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MDc0NTgyLCJleHAiOjE3NTgwNzgxODJ9.q9e0PfLOKpTgh77h_DmIzDfuO2PyT12ZVUwZ1YJD4FE
+
+### redirecionar
+GET http://localhost:3000/links/redirecionar/google123
+

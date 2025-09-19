@@ -1,0 +1,48 @@
+# usuarios
+
+### obterTodos
+GET http://localhost:3000/usuarios?filtro=oioi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+
+### obterPorId
+GET http://localhost:3000/usuarios/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+
+### cadastrar
+POST http://localhost:3000/usuarios
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+Content-Type: application/json
+
+{
+    "nome": "Taaaaaaaaaaaaa",
+    "email": "teste@email.com",
+    "senha": "Senha!23",
+    "ativo": true,
+    "administrador": true
+}
+
+### atualizar
+PATCH http://localhost:3000/usuarios/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+Content-Type: application/json
+
+{
+    "nome": "Taaaa",
+    "email": "teste@email.com",
+    "senha": "Senha!23",
+    "ativo": true,
+    "administrador": true
+}
+
+### remover
+DELETE http://localhost:3000/usuarios/4
+Authorization: Bearer token
+
+### entrar
+POST http://localhost:3000/usuarios/entrar
+Content-Type: application/json
+
+{
+    "email": "administrador@email.com",
+    "senha": "Senha@123"
+}
