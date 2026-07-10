@@ -14,8 +14,20 @@ const mockResponse = () => {
 };
 
 
-const mockRequest = (body: any = {}, params: any = {}, query: any = {}) => {
-    return { body, params, query } as Request;
+const mockRequest = (body: any = {}, params: any = {}, query: any = {}, headers: any = {}) => {
+    return { body, params, query, headers } as unknown as Request;
+};
+
+
+const linkMock: Link = {
+    id: 1,
+    urlOriginal: 'https://example.com',
+    urlCurta: 'abc123',
+    acessos: 0,
+    ativo: true,
+    expiraEm: null,
+    criadoEm: new Date(),
+    atualizadoEm: new Date()
 };
 
 
@@ -25,7 +37,8 @@ const mockLinkService: jest.Mocked<ILinkService> = {
     obterPorUrlCurta: jest.fn(),
     cadastrar: jest.fn(),
     atualizar: jest.fn(),
-    remover: jest.fn()
+    remover: jest.fn(),
+    registrarAcesso: jest.fn()
 };
 
 
@@ -36,33 +49,17 @@ describe('LinkController', () => {
     beforeEach(() => {
         resposta = mockResponse();
         linkController = new LinkController(mockLinkService);
-
         jest.clearAllMocks();
     });
 
     describe('obterTodos', () => {
         it('deve retornar lista de links com status 200', async () => {
-            // Arrange
-            const linksMock: Link[] = [
-                { 
-                    id: 1, 
-                    urlOriginal: 'https://example.com', 
-                    urlCurta: 'abc123', 
-                    acessos: 0, 
-                    ativo: true, 
-                    expiraEm: null, 
-                    criadoEm: new Date(), 
-                    atualizadoEm: new Date() 
-                }
-            ];
-
+            const linksMock: Link[] = [linkMock];
             mockLinkService.obterTodos.mockResolvedValue(linksMock);
             const requisicao = mockRequest({}, {}, { pagina: '1', limite: '10', filtro: 'test' });
 
-            // Act
             await linkController.obterTodos(requisicao, resposta);
 
-            // Assert
             expect(mockLinkService.obterTodos).toHaveBeenCalledWith({
                 pagina: 1,
                 limite: 10,
@@ -71,183 +68,198 @@ describe('LinkController', () => {
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
             expect(resposta.json).toHaveBeenCalledWith(linksMock);
         });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Erro ao buscar links';
+            mockLinkService.obterTodos.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({}, {}, {});
+
+            await linkController.obterTodos(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ error: errorMessage });
+        });
     });
 
     describe('obterPorId', () => {
         it('deve retornar link por ID com status 200', async () => {
-            // Arrange
-            const linkMock: Link = { 
-                id: 1, 
-                urlOriginal: 'https://example.com', 
-                urlCurta: 'abc123', 
-                acessos: 0, 
-                ativo: true, 
-                expiraEm: null, 
-                criadoEm: new Date(), 
-                atualizadoEm: new Date() 
-            };
-
             mockLinkService.obterPorId.mockResolvedValue(linkMock);
             const requisicao = mockRequest({}, { id: 1 }, {});
 
-            // Act
             await linkController.obterPorId(requisicao, resposta);
 
-            // Assert
             expect(mockLinkService.obterPorId).toHaveBeenCalledWith(1);
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
             expect(resposta.json).toHaveBeenCalledWith(linkMock);
+        });
+
+        it('deve retornar 404 quando link nao for encontrado', async () => {
+            mockLinkService.obterPorId.mockResolvedValue(null);
+            const requisicao = mockRequest({}, { id: 999 }, {});
+
+            await linkController.obterPorId(requisicao, resposta);
+
+            expect(mockLinkService.obterPorId).toHaveBeenCalledWith(999);
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+            expect(resposta.json).toHaveBeenCalledWith({ error: 'Link não encontrado' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Erro ao buscar link';
+            mockLinkService.obterPorId.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({}, { id: 1 }, {});
+
+            await linkController.obterPorId(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 
     describe('cadastrar', () => {
         it('deve criar novo link com status 201', async () => {
-            // Arrange
-            const novoLinkDto: CadastrarLinkDto = { 
-                urlOriginal: 'https://example.com', 
-                urlCurta: 'abc123', 
-                expiraEm: null 
+            const novoLinkDto: CadastrarLinkDto = {
+                urlOriginal: 'https://example.com',
+                urlCurta: 'abc123',
+                expiraEm: null
             };
 
-            const linkCriado: Link = { 
-                id: 1, 
-                ...novoLinkDto, 
-                acessos: 0, 
-                ativo: true, 
-                criadoEm: new Date(), 
-                atualizadoEm: new Date() 
-            };
+            mockLinkService.cadastrar.mockResolvedValue(linkMock);
+            const requisicao = mockRequest(novoLinkDto, {}, {});
 
-            mockLinkService.cadastrar.mockResolvedValue(linkCriado);
-            const req = mockRequest(novoLinkDto, {}, {});
+            await linkController.cadastrar(requisicao, resposta);
 
-            // Act
-            await linkController.cadastrar(req, resposta);
-
-            // Assert
             expect(mockLinkService.cadastrar).toHaveBeenCalledWith(novoLinkDto);
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.CREATED);
-            expect(resposta.json).toHaveBeenCalledWith(linkCriado);
+            expect(resposta.json).toHaveBeenCalledWith(linkMock);
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Falha ao cadastrar link';
+            mockLinkService.cadastrar.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({ urlOriginal: 'https://example.com', urlCurta: 'abc123' }, {}, {});
+
+            await linkController.cadastrar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 
     describe('atualizar', () => {
         it('deve atualizar link com status 200', async () => {
-            // Arrange
-            const atualizarLinkDto: AtualizarLinkDto = { 
-                urlCurta: 'novo123',
-                acessos: 5
-            };
-
-            const linkAtualizado: Link = { 
-                id: 1, 
-                urlOriginal: 'https://example.com', 
-                urlCurta: 'novo123', 
-                acessos: 5, 
-                ativo: true, 
-                expiraEm: null, 
-                criadoEm: new Date(), 
-                atualizadoEm: new Date() 
-            };
+            const atualizarLinkDto: AtualizarLinkDto = { urlCurta: 'novo123' };
+            const linkAtualizado: Link = { ...linkMock, ...atualizarLinkDto };
 
             mockLinkService.atualizar.mockResolvedValue(linkAtualizado);
             const requisicao = mockRequest(atualizarLinkDto, { id: 1 }, {});
 
-            // Act
             await linkController.atualizar(requisicao, resposta);
 
-            // Assert
             expect(mockLinkService.atualizar).toHaveBeenCalledWith(1, atualizarLinkDto);
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
             expect(resposta.json).toHaveBeenCalledWith(linkAtualizado);
+        });
+
+        it('deve retornar 404 quando link nao for encontrado', async () => {
+            mockLinkService.atualizar.mockResolvedValue(null);
+            const requisicao = mockRequest({ urlCurta: 'novo123' }, { id: 999 }, {});
+
+            await linkController.atualizar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: 'Link não encontrado' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'UrlCurta já registrada';
+            mockLinkService.atualizar.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({ urlCurta: 'duplicado' }, { id: 1 }, {});
+
+            await linkController.atualizar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 
     describe('remover', () => {
         it('deve remover link com status 200', async () => {
-            // Arrange
-            const linkRemovido: Link = { 
-                id: 1, 
-                urlOriginal: 'https://example.com', 
-                urlCurta: 'abc123', 
-                acessos: 0, 
-                ativo: true, 
-                expiraEm: null, 
-                criadoEm: new Date(), 
-                atualizadoEm: new Date() 
-            };
+            mockLinkService.remover.mockResolvedValue(linkMock);
+            const requisicao = mockRequest({}, { id: 1 }, {});
 
-            mockLinkService.remover.mockResolvedValue(linkRemovido);
-            const req = mockRequest({}, { id: 1 }, {});
+            await linkController.remover(requisicao, resposta);
 
-            // Act
-            await linkController.remover(req, resposta);
-
-            // Assert
             expect(mockLinkService.remover).toHaveBeenCalledWith(1);
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
-            expect(resposta.json).toHaveBeenCalledWith(linkRemovido);
+            expect(resposta.json).toHaveBeenCalledWith(linkMock);
+        });
+
+        it('deve retornar 404 quando link nao for encontrado', async () => {
+            mockLinkService.remover.mockResolvedValue(null);
+            const requisicao = mockRequest({}, { id: 999 }, {});
+
+            await linkController.remover(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: 'Link não encontrado' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Falha ao remover link';
+            mockLinkService.remover.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({}, { id: 1 }, {});
+
+            await linkController.remover(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 
     describe('redirecionar', () => {
         it('deve redirecionar para URL original quando encontrada', async () => {
-            // Arrange
-            const linkMock: Link = { 
-                id: 1, 
-                urlOriginal: 'https://example.com', 
-                urlCurta: 'abc123', 
-                acessos: 0, 
-                ativo: true, 
-                expiraEm: null, 
-                criadoEm: new Date(), 
-                atualizadoEm: new Date() 
-            };
-
             mockLinkService.obterPorUrlCurta.mockResolvedValue(linkMock);
-            
-            // Correção: usar params em vez de body
+            mockLinkService.registrarAcesso.mockResolvedValue(undefined);
             const requisicao = {
-                params: { urlCurta: 'abc123' }
+                params: { urlCurta: 'abc123' },
+                headers: { 'user-agent': 'Mozilla/5.0', referer: 'https://google.com' },
+                ip: '127.0.0.1'
             } as unknown as Request;
 
-            // Act
             await linkController.redirecionar(requisicao, resposta);
 
-            // Assert
             expect(mockLinkService.obterPorUrlCurta).toHaveBeenCalledWith('abc123');
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.PERMANENT_REDIRECT);
             expect(resposta.redirect).toHaveBeenCalledWith('https://example.com');
         });
 
-        it('deve retornar 404 quando URL curta não for encontrada', async () => {
-            // Arrange
+        it('deve retornar 404 quando URL curta nao for encontrada', async () => {
             mockLinkService.obterPorUrlCurta.mockResolvedValue(null);
             const requisicao = {
-                params: { urlCurta: 'inexistente' }
+                params: { urlCurta: 'inexistente' },
+                headers: {},
+                ip: '127.0.0.1'
             } as unknown as Request;
 
-            // Act
             await linkController.redirecionar(requisicao, resposta);
 
-            // Assert
             expect(mockLinkService.obterPorUrlCurta).toHaveBeenCalledWith('inexistente');
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
             expect(resposta.json).toHaveBeenCalledWith({ msg: 'UrlCurta não encontrada' });
         });
 
-        it('deve retornar erro 500 quando service falhar', async () => {
-            // Arrange
-            const errorMessage = "Cannot read properties of undefined (reading 'urlCurta')";
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Erro interno';
             mockLinkService.obterPorUrlCurta.mockRejectedValue(new Error(errorMessage));
             const requisicao = {
-                params: { urlCurta: 'abc123' }
+                params: { urlCurta: 'abc123' },
+                headers: {},
+                ip: '127.0.0.1'
             } as unknown as Request;
 
-            // Act
             await linkController.redirecionar(requisicao, resposta);
 
-            // Assert
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
             expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });

@@ -39,11 +39,11 @@ class LinkValidator implements ILinkValidator {
 
     cadastrar() {
         return YupMiddleware.validarConsulta(esquema => ({
-            body: esquema<CadastrarLinkDto>(yup.object().shape({
+            body: esquema(yup.object().shape({
                 urlOriginal: yup.string().required().url('URL original deve ser uma URL válida'),
-                urlCurta: yup.string().required().min(3).max(50).matches(/^[a-zA-Z0-9_-]+$/, 'URL curta pode conter apenas letras, números, hífens e underscores'),
+                urlCurta: yup.string().optional().min(3).max(50).matches(/^[a-zA-Z0-9_-]+$/, 'URL curta pode conter apenas letras, números, hífens e underscores'),
                 expiraEm: yup.date().optional().nullable().min(new Date(), 'Data de expiração não pode ser no passado')
-            }))
+            }) as yup.ObjectSchema<CadastrarLinkDto>)
         }));
     }
 

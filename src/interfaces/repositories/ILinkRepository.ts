@@ -8,4 +8,6 @@ export interface ILinkRepository {
     cadastrar(cadastrarLinkDto: CadastrarLinkDto): Promise<Link | null>;
     atualizar(id: number, atualizarLinkDto: AtualizarLinkDto): Promise<Link | null>;
     remover(id: number): Promise<boolean>;
+    incrementarAcessos(linkId: number): Promise<void>;
+    urlCurtaExiste(urlCurta: string): Promise<boolean>;
 }

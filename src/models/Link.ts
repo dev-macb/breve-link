@@ -9,6 +9,6 @@ export interface Link {
     atualizadoEm: Date;
 }
 
-export type CadastrarLinkDto = Omit<Link, 'id' | 'acessos' | 'ativo' | 'criadoEm' | 'atualizadoEm'>;
+export type CadastrarLinkDto = Omit<Link, 'id' | 'acessos' | 'ativo' | 'criadoEm' | 'atualizadoEm'> & { urlCurta?: string };
 export type AtualizarLinkDto = Partial<Omit<Link, 'id' | 'criadoEm' | 'atualizadoEm'>>;
 export type RedirecionarLinkDto = Partial<Omit<Link, 'id' | 'urlOriginal' | 'acessos' | 'ativo' | 'expiraEm' | 'criadoEm' | 'atualizadoEm'>>;

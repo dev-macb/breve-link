@@ -1,0 +1,8 @@
+### obterEstatisticas
+GET http://localhost:3000/links/1/stats
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzgzNzAxMDgzLCJleHAiOjE3ODM3MDQ2ODN9.lHG72Lt9GiaeG0TAoydL3UFJkStYpfv1N_3iHrkojXM
+
+
+### obterTodos
+GET http://localhost:3000/acessos
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzgzNzAxMDgzLCJleHAiOjE3ODM3MDQ2ODN9.lHG72Lt9GiaeG0TAoydL3UFJkStYpfv1N_3iHrkojXM

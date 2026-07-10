@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import { StatusCodes } from 'http-status-codes';
 import { IId, IFiltros, ILinkService } from '../interfaces';
 import { AtualizarLinkDto, CadastrarLinkDto, RedirecionarLinkDto } from '../models';
+import { ParserUtil } from '../utils/ParserUtil';
 
 
 @injectable()
@@ -111,6 +112,21 @@ class LinkController {
                 logger.warn({ urlCurta: dados.urlCurta }, 'URL curta não encontrada');
                 return resposta.status(StatusCodes.NOT_FOUND).json({ msg: 'UrlCurta não encontrada' });
             }
+
+            const ip = ParserUtil.extrairIp(requisicao);
+            const dadosNavegador = ParserUtil.parsearUserAgent(requisicao.headers['user-agent']);
+            const dadosGeolocalizacao = ParserUtil.obterGeolocalizacao(ip);
+            const referrer = (requisicao.headers.referer || requisicao.headers.referrer) as string || null;
+
+            this.linkService.registrarAcesso(link.id, {
+                ip,
+                navegador: dadosNavegador.navegador,
+                sistemaOperacional: dadosNavegador.sistemaOperacional,
+                dispositivo: dadosNavegador.dispositivo,
+                referrer,
+                pais: dadosGeolocalizacao.pais,
+                cidade: dadosGeolocalizacao.cidade
+            }).catch(() => {});
 
             resposta.status(StatusCodes.PERMANENT_REDIRECT).redirect(link.urlOriginal);
             return resposta; 

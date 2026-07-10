@@ -16,7 +16,7 @@ const iniciarServidor = async () => {
             logger.info('Migrations executadas');
         }
 
-        const porta = process.env.APP_PORTA || 3333;
+        const porta = process.env.APP_PORTA || 3000;
         servidor.listen(porta, () => {
             logger.info('O servidor HTTP está rodando...')
             logger.info(`Aplicação escutando em localhost : ${porta}`);

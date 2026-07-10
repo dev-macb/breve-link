@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import express from 'express';
 import pinoHttp from 'pino-http';
 import { logger } from './Logger';
-import { usuarioRouter, linkRouter } from '../routes';
+import { acessoRouter, usuarioRouter, linkRouter } from '../routes';
 import { LoggerMiddleware } from '../middlewares/LoggerMiddleware';
 
 
@@ -19,6 +19,7 @@ servidor.use(express.urlencoded({ extended: true }));
 
 servidor.use('/usuarios', usuarioRouter);
 servidor.use('/links', linkRouter);
+servidor.use('/links', acessoRouter);
 
 
 export { servidor };

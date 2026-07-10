@@ -1,0 +1,149 @@
+import { ETabela } from '../enums';
+import { Knex } from '../config/knex';
+import { injectable } from 'inversify';
+import { logger } from '../config/Logger';
+import { Acesso, CadastrarAcessoDto } from '../models';
+import { ContagemCidade, ContagemPorCampo, IAcessoRepository, RegistroAcessoDiario } from '../interfaces/repositories/IAcessoRepository';
+
+
+@injectable()
+class AcessoRepository implements IAcessoRepository {
+    async cadastrar(cadastrarAcessoDto: CadastrarAcessoDto): Promise<void> {
+        try {
+            await Knex<Acesso>(ETabela.acessos).insert(cadastrarAcessoDto);
+        }
+        catch (erro: any) {
+            logger.error({ erro, cadastrarAcessoDto }, 'Erro ao registrar acesso');
+            throw erro;
+        }
+    }
+
+    async contarTotalPorLinkId(linkId: number): Promise<number> {
+        try {
+            const resultado = await Knex(ETabela.acessos)
+                .where({ linkId })
+                .count('id as total')
+                .first() as any;
+
+            return Number(resultado?.total) || 0;
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos totais');
+            throw erro;
+        }
+    }
+
+    async contarPorDia(linkId: number): Promise<RegistroAcessoDiario[]> {
+        try {
+            return await Knex<Acesso>(ETabela.acessos)
+                .where({ linkId })
+                .select(Knex.raw("date(criadoEm) as data"))
+                .count('id as acessos')
+                .groupBy(Knex.raw("date(criadoEm)"))
+                .orderBy('data', 'desc');
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por dia');
+            throw erro;
+        }
+    }
+
+    async contarPorNavegador(linkId: number): Promise<ContagemPorCampo[]> {
+        try {
+            return await Knex<Acesso>(ETabela.acessos)
+                .where({ linkId })
+                .select('navegador as campo')
+                .count('id as acessos')
+                .groupBy('navegador')
+                .orderBy('acessos', 'desc');
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por navegador');
+            throw erro;
+        }
+    }
+
+    async contarPorSistemaOperacional(linkId: number): Promise<ContagemPorCampo[]> {
+        try {
+            return await Knex<Acesso>(ETabela.acessos)
+                .where({ linkId })
+                .select('sistemaOperacional as campo')
+                .count('id as acessos')
+                .groupBy('sistemaOperacional')
+                .orderBy('acessos', 'desc');
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por SO');
+            throw erro;
+        }
+    }
+
+    async contarPorDispositivo(linkId: number): Promise<ContagemPorCampo[]> {
+        try {
+            return await Knex<Acesso>(ETabela.acessos)
+                .where({ linkId })
+                .select('dispositivo as campo')
+                .count('id as acessos')
+                .groupBy('dispositivo')
+                .orderBy('acessos', 'desc');
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por dispositivo');
+            throw erro;
+        }
+    }
+
+    async contarPorReferrer(linkId: number): Promise<ContagemPorCampo[]> {
+        try {
+            return await Knex<Acesso>(ETabela.acessos)
+                .where({ linkId })
+                .select('referrer as campo')
+                .count('id as acessos')
+                .groupBy('referrer')
+                .orderBy('acessos', 'desc');
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por referrer');
+            throw erro;
+        }
+    }
+
+    async contarPorPais(linkId: number): Promise<ContagemPorCampo[]> {
+        try {
+            return await Knex<Acesso>(ETabela.acessos)
+                .where({ linkId })
+                .select('pais as campo')
+                .count('id as acessos')
+                .groupBy('pais')
+                .orderBy('acessos', 'desc');
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por país');
+            throw erro;
+        }
+    }
+
+    async contarPorCidade(linkId: number): Promise<ContagemCidade[]> {
+        try {
+            const resultados = await Knex(ETabela.acessos)
+                .where({ linkId })
+                .select('cidade', 'pais')
+                .count('id as acessos')
+                .groupBy('cidade', 'pais')
+                .orderBy('acessos', 'desc');
+
+            return resultados.map((r: any) => ({
+                cidade: r.cidade,
+                pais: r.pais,
+                acessos: Number(r.acessos)
+            }));
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao contar acessos por cidade');
+            throw erro;
+        }
+    }
+}
+
+
+export { AcessoRepository };

@@ -18,7 +18,19 @@ const mockRequest = (body: any = {}, params: any = {}, query: any = {}) => {
 };
 
 
-const mockUsuarioService: IUsuarioService = {
+const usuarioMock: Usuario = {
+    id: 1,
+    nome: 'Usuario Teste',
+    email: 'teste@email.com',
+    senha: 'hash123',
+    ativo: true,
+    administrador: false,
+    criadoEm: new Date(),
+    atualizadoEm: new Date()
+};
+
+
+const mockUsuarioService: jest.Mocked<IUsuarioService> = {
     obterTodos: jest.fn(),
     obterPorId: jest.fn(),
     cadastrar: jest.fn(),
@@ -35,25 +47,17 @@ describe('UsuarioController', () => {
     beforeEach(() => {
         resposta = mockResponse();
         usuarioController = new UsuarioController(mockUsuarioService);
-
         jest.clearAllMocks();
     });
 
     describe('obterTodos', () => {
-        it('deve retornar lista de usuários com status 200', async () => {
-            // Arrange
-            const usuariosMock: Usuario[] = [
-                { id: 1, nome: 'Usuario 1', email: 'usuario1@email.com', senha: 'hash123', ativo: true, administrador: false, criadoEm: new Date(), atualizadoEm: new Date() },
-                { id: 2, nome: 'Usuario 2', email: 'usuario2@email.com', senha: 'hash456', ativo: true, administrador: true, criadoEm: new Date(), atualizadoEm: new Date() }
-            ];
-
-            (mockUsuarioService.obterTodos as jest.Mock).mockResolvedValue(usuariosMock);
+        it('deve retornar lista de usuarios com status 200', async () => {
+            const usuariosMock: Usuario[] = [usuarioMock];
+            mockUsuarioService.obterTodos.mockResolvedValue(usuariosMock);
             const requisicao = mockRequest({}, {}, { pagina: '1', limite: '10' });
 
-            // Act
             await usuarioController.obterTodos(requisicao, resposta);
 
-            // Assert
             expect(mockUsuarioService.obterTodos).toHaveBeenCalledWith({
                 pagina: 1,
                 limite: 10,
@@ -63,128 +67,204 @@ describe('UsuarioController', () => {
             expect(resposta.json).toHaveBeenCalledWith(usuariosMock);
         });
 
-        it('deve retornar erro 500 quando service falhar', async () => {
-            // Arrange
+        it('deve retornar 500 quando service falhar', async () => {
             const errorMessage = 'Erro ao buscar usuários';
-            (mockUsuarioService.obterTodos as jest.Mock).mockRejectedValue(new Error(errorMessage));
+            mockUsuarioService.obterTodos.mockRejectedValue(new Error(errorMessage));
             const requisicao = mockRequest({}, {}, {});
 
-            // Act
             await usuarioController.obterTodos(requisicao, resposta);
 
-            // Assert
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
             expect(resposta.json).toHaveBeenCalledWith({ error: errorMessage });
         });
     });
 
     describe('obterPorId', () => {
-        it('deve retornar usuário por ID com status 200', async () => {
-            // Arrange
-            const usuarioMock: Usuario = { 
-                id: 1, 
-                nome: 'Usuario Teste', 
-                email: 'teste@email.com', 
-                senha: 'hash123', 
-                ativo: true, 
-                administrador: false,
-                criadoEm: new Date(),
-                atualizadoEm: new Date()
-            };
+        it('deve retornar usuario por ID com status 200', async () => {
+            mockUsuarioService.obterPorId.mockResolvedValue(usuarioMock);
+            const requisicao = mockRequest({}, { id: 1 }, {});
 
-            (mockUsuarioService.obterPorId as jest.Mock).mockResolvedValue(usuarioMock);
-            const req = mockRequest({}, { id: 1 }, {});
+            await usuarioController.obterPorId(requisicao, resposta);
 
-            // Act
-            await usuarioController.obterPorId(req, resposta);
-
-            // Assert
             expect(mockUsuarioService.obterPorId).toHaveBeenCalledWith(1);
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
             expect(resposta.json).toHaveBeenCalledWith(usuarioMock);
         });
 
-        it('deve retornar 404 quando usuário não for encontrado', async () => {
-            // Arrange
-            (mockUsuarioService.obterPorId as jest.Mock).mockResolvedValue(null);
-            const req = mockRequest({}, { id: '999' }, {});
+        it('deve retornar 404 quando usuario nao for encontrado', async () => {
+            mockUsuarioService.obterPorId.mockResolvedValue(null);
+            const requisicao = mockRequest({}, { id: 999 }, {});
 
-            // Act
-            await usuarioController.obterPorId(req, resposta);
+            await usuarioController.obterPorId(requisicao, resposta);
 
-            // Assert
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
             expect(resposta.json).toHaveBeenCalledWith({ error: 'Usuário não encontrado' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Erro ao buscar usuário';
+            mockUsuarioService.obterPorId.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({}, { id: 1 }, {});
+
+            await usuarioController.obterPorId(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 
     describe('cadastrar', () => {
-        it('deve criar novo usuário com status 201', async () => {
-            // Arrange
-            const novoUsuario: CadastrarUsuarioDto = { 
-                nome: 'Novo Usuario', 
-                email: 'novo@email.com', 
-                senha: 'hash123', 
-                ativo: true, 
-                administrador: false 
-            };
-
-            (mockUsuarioService.cadastrar as jest.Mock).mockResolvedValue(novoUsuario);
-            const req = mockRequest({
+        it('deve criar novo usuario com status 201', async () => {
+            const novoUsuarioDto: CadastrarUsuarioDto = {
                 nome: 'Novo Usuario',
                 email: 'novo@email.com',
+                senha: 'senha123',
+                ativo: true,
+                administrador: false
+            };
+
+            const usuarioCriado: Usuario = { ...usuarioMock, ...novoUsuarioDto };
+            mockUsuarioService.cadastrar.mockResolvedValue(usuarioCriado);
+            const requisicao = mockRequest(novoUsuarioDto, {}, {});
+
+            await usuarioController.cadastrar(requisicao, resposta);
+
+            expect(mockUsuarioService.cadastrar).toHaveBeenCalledWith(novoUsuarioDto);
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.CREATED);
+            expect(resposta.json).toHaveBeenCalledWith(usuarioCriado);
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Email já registrado';
+            mockUsuarioService.cadastrar.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({
+                nome: 'Teste',
+                email: 'existente@email.com',
                 senha: 'senha123',
                 ativo: true,
                 administrador: false
             }, {}, {});
 
-            // Act
-            await usuarioController.cadastrar(req, resposta);
+            await usuarioController.cadastrar(requisicao, resposta);
 
-            // Assert
-            expect(mockUsuarioService.cadastrar).toHaveBeenCalledWith({
-                nome: 'Novo Usuario',
-                email: 'novo@email.com',
-                senha: 'senha123',
-                ativo: true,
-                administrador: false
-            });
-            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.CREATED);
-            expect(resposta.json).toHaveBeenCalledWith(novoUsuario);
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
+        });
+    });
+
+    describe('atualizar', () => {
+        it('deve atualizar usuario com status 200', async () => {
+            const usuarioAtualizado: Usuario = { ...usuarioMock, nome: 'Nome Atualizado' };
+            mockUsuarioService.atualizar.mockResolvedValue(usuarioAtualizado);
+            const requisicao = mockRequest({ nome: 'Nome Atualizado' }, { id: 1 }, {});
+
+            await usuarioController.atualizar(requisicao, resposta);
+
+            expect(mockUsuarioService.atualizar).toHaveBeenCalledWith(1, { nome: 'Nome Atualizado' });
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
+            expect(resposta.json).toHaveBeenCalledWith(usuarioAtualizado);
+        });
+
+        it('deve retornar 404 quando usuario nao for encontrado', async () => {
+            mockUsuarioService.atualizar.mockResolvedValue(null);
+            const requisicao = mockRequest({ nome: 'Teste' }, { id: 999 }, {});
+
+            await usuarioController.atualizar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: 'Usuário não encontrado' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Email já registrado';
+            mockUsuarioService.atualizar.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({ email: 'duplicado@email.com' }, { id: 1 }, {});
+
+            await usuarioController.atualizar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
+        });
+    });
+
+    describe('remover', () => {
+        it('deve remover usuario com status 200', async () => {
+            mockUsuarioService.remover.mockResolvedValue(usuarioMock);
+            const requisicao = mockRequest({}, { id: 1 }, {});
+
+            await usuarioController.remover(requisicao, resposta);
+
+            expect(mockUsuarioService.remover).toHaveBeenCalledWith(1);
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
+            expect(resposta.json).toHaveBeenCalledWith(usuarioMock);
+        });
+
+        it('deve retornar 404 quando usuario nao for encontrado', async () => {
+            mockUsuarioService.remover.mockResolvedValue(null);
+            const requisicao = mockRequest({}, { id: 999 }, {});
+
+            await usuarioController.remover(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: 'Usuário não encontrado' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Falha ao remover usuário';
+            mockUsuarioService.remover.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({}, { id: 1 }, {});
+
+            await usuarioController.remover(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 
     describe('entrar', () => {
-        it('deve retornar token e usuário ao fazer login', async () => {
-            // Arrange
-            const loginResponse = {
-                usuario: { 
-                id: 1, 
-                nome: 'Usuario Teste', 
-                email: 'teste@email.com', 
-                senha: 'hash123', 
-                ativo: true, 
-                administrador: false 
-                },
-                token: 'jwt-token-123'
-            };
-
-            (mockUsuarioService.entrar as jest.Mock).mockResolvedValue(loginResponse);
-            const req = mockRequest({
+        it('deve retornar token ao fazer login com credenciais validas', async () => {
+            const tokenEsperado = { usuario: usuarioMock, token: 'jwt-token-123' };
+            mockUsuarioService.entrar.mockResolvedValue(tokenEsperado as any);
+            const requisicao = mockRequest({
                 email: 'teste@email.com',
                 senha: 'senha123'
             }, {}, {});
 
-            // Act
-            await usuarioController.entrar(req, resposta);
+            await usuarioController.entrar(requisicao, resposta);
 
-            // Assert
             expect(mockUsuarioService.entrar).toHaveBeenCalledWith({
                 email: 'teste@email.com',
                 senha: 'senha123'
             });
             expect(resposta.status).toHaveBeenCalledWith(StatusCodes.OK);
-            expect(resposta.json).toHaveBeenCalledWith(loginResponse);
+            expect(resposta.json).toHaveBeenCalledWith(tokenEsperado);
+        });
+
+        it('deve retornar 401 quando credenciais forem invalidas', async () => {
+            mockUsuarioService.entrar.mockResolvedValue(null);
+            const requisicao = mockRequest({
+                email: 'invalido@email.com',
+                senha: 'senhaerrada'
+            }, {}, {});
+
+            await usuarioController.entrar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: 'Email ou senha inválidos' });
+        });
+
+        it('deve retornar 500 quando service falhar', async () => {
+            const errorMessage = 'Erro ao autenticar';
+            mockUsuarioService.entrar.mockRejectedValue(new Error(errorMessage));
+            const requisicao = mockRequest({
+                email: 'teste@email.com',
+                senha: 'senha123'
+            }, {}, {});
+
+            await usuarioController.entrar(requisicao, resposta);
+
+            expect(resposta.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+            expect(resposta.json).toHaveBeenCalledWith({ msg: errorMessage });
         });
     });
 });

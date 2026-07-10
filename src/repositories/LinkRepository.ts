@@ -95,6 +95,32 @@ class LinkRepository implements ILinkRepository {
             throw erro;
         }
     }
+
+    async incrementarAcessos(linkId: number): Promise<void> {
+        try {
+            await Knex<Link>(ETabela.links)
+                .where({ id: linkId })
+                .increment('acessos', 1);
+        }
+        catch (erro: any) {
+            logger.error({ erro, linkId }, 'Erro ao incrementar acessos');
+            throw erro;
+        }
+    }
+
+    async urlCurtaExiste(urlCurta: string): Promise<boolean> {
+        try {
+            const resultado = await Knex<Link>(ETabela.links)
+                .where({ urlCurta })
+                .first();
+
+            return !!resultado;
+        }
+        catch (erro: any) {
+            logger.error({ erro, urlCurta }, 'Erro ao verificar urlCurta');
+            throw erro;
+        }
+    }
 }
 
 

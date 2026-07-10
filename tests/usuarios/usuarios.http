@@ -1,16 +1,16 @@
 # usuarios
 
 ### obterTodos
-GET http://localhost:3000/usuarios?filtro=oioi
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+GET http://localhost:3000/usuarios?filtro=administrador
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzgzNzAxMDgzLCJleHAiOjE3ODM3MDQ2ODN9.lHG72Lt9GiaeG0TAoydL3UFJkStYpfv1N_3iHrkojXM
 
 ### obterPorId
 GET http://localhost:3000/usuarios/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzgzNzAxMDgzLCJleHAiOjE3ODM3MDQ2ODN9.lHG72Lt9GiaeG0TAoydL3UFJkStYpfv1N_3iHrkojXM
 
 ### cadastrar
 POST http://localhost:3000/usuarios
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+Authorization: Bearer <token>
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 ### atualizar
 PATCH http://localhost:3000/usuarios/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW5pc3RyYWRvciI6MSwiaWF0IjoxNzU4MjQ3MTUwLCJleHAiOjE3NTgyNTA3NTB9.pv6gGH5AXE-bb1LylfRZNmysVpfUI93EWjGoYKPc1xk
+Authorization: Bearer <token>
 Content-Type: application/json
 
 {
@@ -36,7 +36,7 @@ Content-Type: application/json
 
 ### remover
 DELETE http://localhost:3000/usuarios/4
-Authorization: Bearer token
+Authorization: Bearer <token>
 
 ### entrar
 POST http://localhost:3000/usuarios/entrar
