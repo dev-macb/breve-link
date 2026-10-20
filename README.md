@@ -38,15 +38,43 @@ $ git clone https://github.com/dev-macb/breve-link
 $ cd breve-link
 
 # Instale as dependências
-$ npm install
+$ npm ci
+
+# Copie .env.example para .env e configure APP_ORIGEM, JWT_SEGREDO,
+# ADMIN_EMAIL e ADMIN_SENHA antes de inicializar
 
 # Execute as migrations e as seeds do banco de dados
 $ npm run knex:migrate
-$ npm run knex:seeds
+$ npm run knex:seed
 
 # Executar projeto
 $ npm run dev
 ```
+
+A API administrativa está sob `/api`, com sessão em cookie HttpOnly. Consulte
+[os contratos e instruções da Fase 1](docs/FASE-1-BACKEND.md) e os exemplos em
+`server/tests/**/*.http` para login, proteção CSRF e rotas atualizadas.
+
+### Estrutura e comandos
+
+O projeto usa npm workspaces: backend em `server/` e interface React em `web/`.
+O `.env`, o lockfile e os comandos principais ficam na raiz. `npm run dev` inicia
+API e interface; abra [o frontend local](http://localhost:5173) para acessar o painel.
+
+```bash
+npm run build
+npm run typecheck
+npm run lint
+npm test -- --runInBand
+npm run test:web
+```
+
+Consulte a [documentação da Fase 2](docs/FASE-2-MONOREPO.md) para a arquitetura,
+configuração do banco e execução de migrations na nova estrutura.
+O [guia da interface](docs/FASE-3-INTERFACE.md) descreve login, gerenciamento de links,
+estatísticas e execução local. Para executar frontend e API pelo Express, use
+`npm run build` seguido de `npm start` e abra o endereço definido em `APP_ORIGEM`.
+Consulte o [guia de integração](docs/FASE-4-INTEGRACAO.md) para rotas, cache e runtime.
 <p align="center">🔷</p>
 
 
