@@ -1,6 +1,17 @@
 @base = http://localhost:3000
 @sessao = COLE_APENAS_O_VALOR_DO_COOKIE_breve_sessao
 
-### Estatísticas agregadas; não há endpoint público de listagem de acessos
+### Estatísticas, últimos 100 eventos e top 20 fingerprints (requer administrador)
 GET {{base}}/api/links/1/stats
 Cookie: breve_sessao={{sessao}}
+
+### Acesso público com headers técnicos para inspeção no painel
+GET {{base}}/exemplo
+User-Agent: BreveLink-Inspecao/1.0
+Accept-Language: pt-BR
+Sec-Fetch-Site: none
+
+### Acesso com correlação por hash desativada
+GET {{base}}/exemplo
+User-Agent: BreveLink-Inspecao/1.0
+DNT: 1

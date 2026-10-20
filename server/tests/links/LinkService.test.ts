@@ -30,6 +30,7 @@ const mockLinkRepository: jest.Mocked<ILinkRepository> = {
 
 
 const mockAcessoRepository: jest.Mocked<IAcessoRepository> = {
+    obterRecentes: jest.fn().mockResolvedValue([]),
     cadastrar: jest.fn(),
     contarTotalPorLinkId: jest.fn(),
     contarPorDia: jest.fn(),
@@ -38,6 +39,7 @@ const mockAcessoRepository: jest.Mocked<IAcessoRepository> = {
     contarPorDispositivo: jest.fn(),
     contarPorReferrer: jest.fn(),
     contarPorPais: jest.fn(),
+    obterFingerprint: jest.fn().mockResolvedValue({ hashesDistintos: 0, acessosComHash: 0, grupos: [] }),
     contarPorCidade: jest.fn()
 };
 

@@ -7,7 +7,11 @@ com apresentação sóbria, misteriosa e simples.
 - Fundo quase preto, texto cinza quente e azul saturado nos destaques; verde
   reservado a estados positivos; vermelho e amarelo para erros e avisos.
 - Cantos retos, bordas de um pixel, separadores tracejados e links sublinhados.
-- Painel centralizado com navegação horizontal, métricas compactas e tabela de links.
+- Painel centralizado com navegação horizontal, contadores compactos e tabela de links.
+- Dashboard e estatísticas compartilham títulos de console (`>_ links`, `>_ acessos`),
+  cores, fontes, bordas e controles. As estatísticas não têm paleta própria.
+- Eventos em linhas expansíveis; distribuições secundárias recolhidas e tabela
+  de fingerprints com foco em dados técnicos.
 - Login com diagrama ASCII decorativo; textos curtos e diretos no painel.
 - Tema claro em tons de papel, preservando a mesma estrutura.
 - Sem efeitos piscantes, sons automáticos ou animações decorativas.
@@ -31,6 +35,7 @@ O tema Sistema acompanha a mesma paleta do tema correspondente. A faixa superior
 mantém logo, identificação e saída; a faixa inferior contém os itens de navegação à
 esquerda e a seleção de tema à direita. As datas de cadastro são apresentadas
 em `dd/mm/aaaa`, respeitando o horário local do dispositivo.
+Os eventos, o gráfico diário e os horários dos fingerprints usam UTC.
 
 A estrutura e os componentes usam `web/src/estilos/global.css`; os tokens e a
 composição visual desta direção ficam em `web/src/estilos/retro.css`, importado
@@ -38,5 +43,6 @@ depois da base. As páginas públicas do Express têm seu equivalente em
 `web/public/erro.css`. Formulários mantêm rótulos, foco visível, modal nativo e
 navegação por teclado; a preferência por movimento reduzido continua respeitada.
 
-Verificação: build, tipos e lint; conferência no navegador do login, painel,
-modal, estatísticas e temas em desktop e em 390 × 844, com dados sintéticos.
+Use os tokens compartilhados ao alterar cores; não fixe uma paleta escura dentro
+de uma página. Azul é o destaque principal nos dois temas; verde fica restrito
+a estados positivos, como links ativos.

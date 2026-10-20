@@ -240,3 +240,59 @@ svg { flex-shrink:0; }
 
 .empty-state h1 { font-size:30px; font-weight:500; letter-spacing:-.8px; line-height:1.3; max-width:420px; }
 .not-found-inline { min-height:450px; display:grid; place-items:center; }
+
+.access-event { padding: 14px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.access-event summary { cursor: pointer; line-height: 1.8; }
+.access-event dl { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(0, 3fr); gap: 10px; font-size: 13px; }
+.access-event dt { color: var(--muted); }
+.access-event dd { margin: 0; }
+.fingerprint-table-wrap { overflow-x: auto; }
+.fingerprint-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.fingerprint-table code { display:block; min-width:160px; overflow-wrap:anywhere; }
+.fingerprint-table th,.fingerprint-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; min-width: 100px; max-width: 280px; }
+.fingerprint-table th { color: var(--muted); font-weight: 600; }
+.fingerprint-table th:last-child,.fingerprint-table td:last-child { text-align: right; }
+
+/* Console de acessos: usa o tema compartilhado com o dashboard. */
+.access-console { font-variant-numeric:tabular-nums; }
+.access-console .back-link { margin-bottom:18px; }
+.access-console .stats-heading { align-items:center; margin-bottom:18px; }
+.access-console .stats-heading h1 { font-size:26px; letter-spacing:-1px; margin:8px 0 0; }
+.console-prompt { color:var(--chart); }
+.console-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.access-console .button { padding:8px 11px; min-height:36px; font-size:11px; }
+.access-console .stats-link-strip { padding:12px; margin-bottom:16px; }
+.access-console .stats-link-strip a>strong { color:var(--chart); }
+.access-console .link-tile { background:var(--surface-raised); color:var(--chart); }
+.console-counters { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:1px solid var(--border); margin-bottom:16px; background:var(--surface); }
+.console-counters>div { padding:14px; border-right:1px solid var(--border); }
+.console-counters>div:last-child { border-right:0; }
+.console-counters span { display:block; color:var(--muted); font-size:10px; letter-spacing:.5px; line-height:1.6; }
+.console-counters strong { display:block; margin-top:6px; font-size:28px; font-weight:500; color:var(--chart); }
+.access-console .chart-panel { padding:16px; margin-bottom:16px; }
+.access-console .chart-panel h2 { font-size:12px; color:var(--chart); }
+.access-console .chart-panel>header { align-items:center; }
+.access-console .access-event { padding:0; }
+.access-console .access-event summary { position:relative; display:grid; grid-template-columns:minmax(155px,1.3fr) minmax(120px,1fr) minmax(100px,1fr) minmax(90px,.8fr); gap:12px; align-items:baseline; padding:11px 8px 11px 22px; font-size:11px; list-style:none; border-left:2px solid transparent; }
+.access-console .access-event summary::before { content:'+'; position:absolute; left:6px; top:11px; color:var(--chart); }
+.access-console .access-event[open] summary::before { content:'−'; }
+.access-console .access-event summary:hover,.access-console .access-event[open] summary { background:var(--surface-raised); border-left-color:var(--chart); }
+.access-console .access-event time,.event-location { color:var(--muted); }
+.event-ip { color:var(--chart); overflow-wrap:anywhere; }
+.access-console .access-event dl { font-size:11px; gap:8px 18px; padding:8px 12px 16px; margin:0; }
+.console-section { border:1px solid var(--border); margin-bottom:12px; background:var(--surface); }
+.console-section>summary { padding:14px 16px; cursor:pointer; font-size:12px; color:var(--chart); }
+.console-section[open]>summary { border-bottom:1px solid var(--border); }
+.console-section .distributions { gap:0; }
+.console-section .distribution-card { border:0; border-bottom:1px solid var(--border); padding:16px; }
+.access-console .distribution-card>header { margin-bottom:16px; }
+.access-console .distribution-list { gap:12px; }
+.access-console .distribution-track { height:2px; }
+.access-console .distribution-label { margin-bottom:6px; }
+.console-section .chart-panel { border:0; margin:0; }
+.access-console .fingerprint-table { font-size:11px; }
+.access-console .fingerprint-table th,.access-console .fingerprint-table td { padding:10px 8px; }
+.access-console .text-button { color:var(--chart); font-size:11px; }
+.console-foot { color:var(--muted); font-size:10px; line-height:1.8; padding-top:6px; }
+@media(max-width:1050px) { .access-console .access-event summary { grid-template-columns:1.2fr 1fr; gap:5px 12px; } }
+@media(max-width:650px) { .access-console { padding:0; } .access-console .stats-heading { align-items:flex-start; flex-direction:column; gap:14px; } .console-counters { grid-template-columns:repeat(2,minmax(0,1fr)); } .console-counters>div { padding:12px; } .console-counters>div:nth-child(2) { border-right:0; } .console-counters>div:nth-child(-n+2) { border-bottom:1px solid var(--border); } .console-counters strong { font-size:24px; } .access-console .chart-panel { padding:12px; } .access-console .access-event summary { grid-template-columns:minmax(0,1fr); padding:12px 8px 12px 22px; } .access-console .access-event dl { grid-template-columns:minmax(0,1fr); gap:4px; padding:8px; } .access-console .access-event dd { margin-bottom:8px; } }

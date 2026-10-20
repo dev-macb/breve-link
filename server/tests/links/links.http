@@ -36,7 +36,13 @@ DELETE {{base}}/api/links/1
 Cookie: breve_sessao={{sessao}}
 X-Breve-CSRF: 1
 
-### Redirecionamento público preservado
+### Redirecionamento público canônico
+GET {{base}}/exemplo
+
+### Verificar destino sem registrar acesso
+HEAD {{base}}/exemplo
+
+### Redirecionamento legado
 GET {{base}}/links/redirecionar/exemplo
 
 ### Estatísticas

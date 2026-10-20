@@ -96,6 +96,8 @@ describe('API integrada com SQLite', () => {
         expect(registros[0].ip).not.toBe('8.8.8.8');
         const stats = await api().get('/api/links/' + criado.body.id + '/stats').set('Cookie', cookie).expect(200);
         expect(stats.body.totalAcessos).toBe(8);
+        expect(stats.body).not.toHaveProperty('marketing');
+        expect(stats.body.fingerprint).toHaveProperty('hashesDistintos');
         const editado = await api().patch('/api/links/' + criado.body.id).set('Cookie', cookie).set(csrf).send({ acessos: 500 }).expect(200);
         expect(editado.body.acessos).toBe(8);
         const pagina = await api().get('/api/links?filtro=fluxo&pagina=1&limite=1').set('Cookie', cookie).expect(200);
@@ -104,6 +106,31 @@ describe('API integrada com SQLite', () => {
         const porDestino = await api().get('/api/links?filtro=example.com').set('Cookie', cookie).expect(200);
         expect(porDestino.body.total).toBe(1);
         expect(porDestino.body.itens[0].urlCurta).toBe('fluxo-teste');
+    });
+
+    it('registra detalhes do cliente e protege o historico individual', async () => {
+        const criado = await api().post('/api/links').set('Cookie', cookie).set(csrf)
+            .send({ urlOriginal: 'https://example.com', urlCurta: 'auditoria-cliente' }).expect(201);
+        const agente = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
+        await api().get('/auditoria-cliente').set('User-Agent', agente)
+            .set('Accept-Language', 'pt-BR,pt;q=0.9').set('X-Forwarded-For', '8.8.8.8').expect(302);
+        const rota = '/api/links/' + criado.body.id + '/stats';
+        await api().get(rota).expect(401);
+        const stats = await api().get(rota).set('Cookie', cookie).expect(200);
+        expect(stats.body.acessosRecentes).toHaveLength(1);
+        expect(stats.body.acessosRecentes[0]).toMatchObject({
+            userAgent: agente, idioma: 'pt-BR,pt;q=0.9', navegador: 'Chrome',
+            versaoNavegador: '130.0.0.0', sistemaOperacional: 'Windows'
+        });
+        expect(stats.body.acessosRecentes[0].ip).not.toBe('8.8.8.8');
+        const registros = Array.from({ length: 105 }, () => ({ linkId: criado.body.id }));
+        await Knex('acessos').insert(registros);
+        const recentes = await new AcessoRepository().obterRecentes(criado.body.id);
+        expect(recentes).toHaveLength(100);
+        expect(recentes[0].id).toBeGreaterThan(recentes[99].id);
+        expect(await new AcessoRepository().contarTotalPorLinkId(criado.body.id)).toBe(106);
+        await Knex('acessos').where({ linkId: criado.body.id }).delete();
+        await Knex('links').where({ id: criado.body.id }).delete();
     });
 
     it('retorna conflito em criacoes concorrentes de um mesmo slug', async () => {

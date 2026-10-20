@@ -1,12 +1,19 @@
-# Frontend do Breve Link
+# Interface do Breve Link
 
-Interface administrativa em React, Vite, TypeScript e Tailwind v4, com login,
-dashboard e estatísticas integrados à API.
+Painel privado em React, TypeScript e Vite para links, acessos e fingerprints.
+Execute os comandos na raiz do repositório:
 
-Execute `npm run dev` na raiz para iniciar API e frontend, ou `npm run dev:web`
-para iniciar somente a interface. O frontend abre em `http://localhost:5173`.
+```sh
+npm run dev
+npm run build
+npm run test:web
+```
 
-Na raiz, `npm run build` gera o backend e `web/dist/`; `npm run test:web` executa
-os testes do cliente. O lint e a checagem de tipos também são centralizados na raiz.
+`npm run dev` inicia API e interface. Para iniciar só o Vite, use `npm run dev:web`
+com a API já em execução. O painel local usa `http://localhost:5173`; o build sai
+em `web/dist/` e é servido pelo Express com `npm start`.
 
-Veja [setup, contratos e verificação da Fase 3](../docs/FASE-3-INTERFACE.md).
+- [Instalação e comandos](../README.md)
+- [Interface e navegação](../docs/INTERFACE.md)
+- [Identidade visual](../docs/IDENTIDADE-VISUAL.md)
+- [API](../docs/API.md)

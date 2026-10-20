@@ -1,91 +1,87 @@
-<h1 align="center">🔷 Breve Link 🔷</h1>
+# Breve Link
 
-<p align="center">
-    Um encurtador de URLs simples e eficiente construído com Node.js e TypeScript.
-</p>
+Redirecionador pessoal de URLs com painel privado para gerenciar links e estudar
+os acessos. Dados e fingerprints ficam no SQLite local; o redirecionamento não
+consulta serviços externos.
 
-<p align="center">
-    <a href="https://github.com/dev-macb/breve-link/blob/main/LICENSE" target="_blank">
-        <img alt="GitHub license" src="https://img.shields.io/github/license/dev-macb/breve-link">
-    </a>
-    <a href="https://github.com/dev-macb/breve-link/stargazers" target="_blank">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/dev-macb/breve-link">
-    </a>
-    <a href="https://github.com/dev-macb/breve-link/network" target="_blank">
-        <img alt="GitHub forks" src="https://img.shields.io/github/forks/dev-macb/breve-link">
-    </a>
-</p>
+## Instalação
 
+Requisitos: Node.js `^22.13.0 || >=24` e npm `>=10`.
 
----
-
-
-### ✨ Sobre o Projeto
-<strong>Breve Link</strong> é um encurtador de URLs robusto e fácil de usar, desenvolvido como uma API RESTful em <strong>Node.js</strong> com <strong>TypeScript</strong>. O objetivo principal deste projeto é transformar links longos e complexos em URLs curtas e amigáveis, ideais para compartilhamento em redes sociais, mensagens ou qualquer outro meio onde a concisão é valorizada. Este repositório contém todo o código-fonte, configurações e documentação necessários para você rodar, entender e até mesmo contribuir para o projeto.
-<p align="center">🔷</p>
-
-
-<h3 id="instalação">🔧 Instalação</h3>
-<p>
-    Para configurar e rodar o projeto, siga os passos abaixo no seu terminal.
-</p>
-
-```bash
-# Clone o repositório
-$ git clone https://github.com/dev-macb/breve-link
-
-# Acesse o diretório do projeto
-$ cd breve-link
-
-# Instale as dependências
-$ npm ci
-
-# Copie .env.example para .env e configure APP_ORIGEM, JWT_SEGREDO,
-# ADMIN_EMAIL e ADMIN_SENHA antes de inicializar
-
-# Execute as migrations e as seeds do banco de dados
-$ npm run knex:migrate
-$ npm run knex:seed
-
-# Executar projeto
-$ npm run dev
+```sh
+git clone https://github.com/dev-macb/breve-link
+cd breve-link
+npm ci
 ```
 
-A API administrativa está sob `/api`, com sessão em cookie HttpOnly. Consulte
-[os contratos e instruções da Fase 1](docs/FASE-1-BACKEND.md) e os exemplos em
-`server/tests/**/*.http` para login, proteção CSRF e rotas atualizadas.
+Copie `.env.example` para `.env` na raiz. Configure `APP_ORIGEM`, `JWT_SEGREDO`,
+`ADMIN_EMAIL` e `ADMIN_SENHA`. Troque as credenciais de exemplo. Para gerar um
+segredo de sessão:
 
-### Estrutura e comandos
+```sh
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
 
-O projeto usa npm workspaces: backend em `server/` e interface React em `web/`.
-O `.env`, o lockfile e os comandos principais ficam na raiz. `npm run dev` inicia
-API e interface; abra [o frontend local](http://localhost:5173) para acessar o painel.
+Inicialize o banco e o administrador:
 
-```bash
+```sh
+npm run knex:migrate
+npm run knex:seed
+npm run dev
+```
+
+Abra [o painel local](http://localhost:5173). A API usa a porta 3000 por padrão.
+Os links copiados usam `APP_ORIGEM`, independentemente da porta do painel.
+
+## Uso
+
+- Crie um link com destino HTTP/HTTPS e endereço curto opcional.
+- Copie, edite, pause, defina expiração ou exclua pelo dashboard.
+- Abra as estatísticas para inspecionar IP, cliente, headers e fingerprint.
+- Expanda um evento para ver seus detalhes técnicos; a tabela de fingerprints
+  reúne os 20 hashes mais frequentes do link, com primeiro e último acesso.
+
+O painel usa visual de console, azul como destaque e temas escuro, claro e sistema.
+Os contadores de ativos e acessos do dashboard consideram a página exibida.
+
+## Execução compilada
+
+```sh
 npm run build
-npm run typecheck
-npm run lint
-npm test -- --runInBand
-npm run test:web
+npm start
 ```
 
-Consulte a [documentação da Fase 2](docs/FASE-2-MONOREPO.md) para a arquitetura,
-configuração do banco e execução de migrations na nova estrutura.
-O [guia da interface](docs/FASE-3-INTERFACE.md) descreve login, gerenciamento de links,
-estatísticas e execução local. Para executar frontend e API pelo Express, use
-`npm run build` seguido de `npm start` e abra o endereço definido em `APP_ORIGEM`.
-Consulte o [guia de integração](docs/FASE-4-INTEGRACAO.md) para rotas, cache e runtime.
-<p align="center">🔷</p>
+O Express serve API e interface em `APP_ORIGEM`. O build produz `server/build/`
+e `web/dist/`. Em produção, configure HTTPS e persistência do banco conforme
+[o guia de operação](docs/OPERACAO.md).
 
+## Desenvolvimento
 
-### ✒️ Contribuições
-Se deseja contribuir, relate problemas ou sugira melhorias abrindo uma 
-<a href="https://github.com/dev-macb/breve-link/issues">Issue</a> ou enviando um <em>Pull Request</em>. Se gostou do 
-projeto, deixe uma ⭐ para apoiar!
-<p align="center">🔷</p>
+O projeto usa npm workspaces: `server/` para Express/TypeScript e `web/` para
+React/Vite. `.env`, comandos e lockfile ficam na raiz.
 
+| Comando | Uso |
+| --- | --- |
+| `npm run dev` | API e interface em desenvolvimento |
+| `npm run dev:server` / `npm run dev:web` | Iniciar apenas um workspace |
+| `npm run build` | Compilar backend e interface |
+| `npm run typecheck` | Verificar tipos, incluindo testes |
+| `npm run lint` | Verificar código e configurações |
+| `npm test -- --runInBand` | Testes do backend |
+| `npm run test:web` | Testes da interface |
 
-### 📄 Licença
-O repositório <strong>breve-link</strong> utiliza a <strong>licença MIT</strong> em todo seu código, confira suas 
-condições em <a href="https://github.com/dev-macb/breve-link/blob/main/LICENSE">LICENSE</a>.
-<p align="center">🔷</p>
+## Documentação
+
+- [Operação e configuração](docs/OPERACAO.md)
+- [API e autenticação](docs/API.md)
+- [Arquitetura e banco](docs/ARQUITETURA.md)
+- [Interface e navegação](docs/INTERFACE.md)
+- [Coleta e fingerprints](docs/ACESSOS-FINGERPRINT.md)
+- [Identidade visual](docs/IDENTIDADE-VISUAL.md)
+
+A coleta é feita na requisição ao redirecionador, sem acompanhar a navegação no
+destino. GET inclui bots e previews; HEAD não contabiliza acesso. O fingerprint
+correlaciona headers e não identifica pessoas. Falhas de coleta podem deixar o
+histórico incompleto, mas não bloqueiam o destino.
+
+Licença [MIT](LICENSE).

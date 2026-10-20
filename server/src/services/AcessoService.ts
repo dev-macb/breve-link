@@ -26,8 +26,11 @@ class AcessoService implements IAcessoService {
         const referrers = await this.acessoRepository.contarPorReferrer(linkId);
         const paises = await this.acessoRepository.contarPorPais(linkId);
         const cidades = await this.acessoRepository.contarPorCidade(linkId);
+        const fingerprint = await this.acessoRepository.obterFingerprint(linkId);
 
         return {
+            fingerprint,
+            acessosRecentes: await this.acessoRepository.obterRecentes(linkId),
             link: {
                 id: link.id,
                 urlOriginal: link.urlOriginal,

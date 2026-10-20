@@ -2,6 +2,8 @@ import { UAParser } from 'ua-parser-js';
 import geoip from 'geoip-lite';
 
 interface DadosNavegador {
+    versaoNavegador?: string | null;
+    versaoSistemaOperacional?: string | null;
     navegador: string | null;
     sistemaOperacional: string | null;
     dispositivo: string | null;
@@ -23,6 +25,8 @@ class ParserUtil {
 
         return {
             navegador: resultado.browser.name || null,
+            versaoNavegador: resultado.browser.version || null,
+            versaoSistemaOperacional: resultado.os.version || null,
             sistemaOperacional: resultado.os.name || null,
             dispositivo: resultado.device.type || 'desktop'
         };

@@ -1,4 +1,4 @@
-import { CadastrarAcessoDto } from '../../models/Acesso';
+import { Acesso, CadastrarAcessoDto } from '../../models/Acesso';
 
 interface RegistroAcessoDiario {
     data: string;
@@ -17,6 +17,8 @@ interface ContagemCidade {
 }
 
 interface IAcessoRepository {
+    obterFingerprint(linkId: number): Promise<ResumoFingerprint>;
+    obterRecentes(linkId: number): Promise<Acesso[]>;
     cadastrar(cadastrarAcessoDto: CadastrarAcessoDto): Promise<void>;
     contarTotalPorLinkId(linkId: number): Promise<number>;
     contarPorDia(linkId: number): Promise<RegistroAcessoDiario[]>;
@@ -26,6 +28,17 @@ interface IAcessoRepository {
     contarPorReferrer(linkId: number): Promise<ContagemPorCampo[]>;
     contarPorPais(linkId: number): Promise<ContagemPorCampo[]>;
     contarPorCidade(linkId: number): Promise<ContagemCidade[]>;
+}
+
+export interface ResumoFingerprint {
+    hashesDistintos: number;
+    acessosComHash: number;
+    grupos: Array<{
+        hashDispositivo: string;
+        acessos: number;
+        primeiroAcesso: string;
+        ultimoAcesso: string;
+    }>;
 }
 
 

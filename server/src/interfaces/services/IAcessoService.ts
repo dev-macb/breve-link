@@ -1,5 +1,10 @@
 
+import { Acesso } from '../../models/Acesso';
+import { ResumoFingerprint } from '../repositories/IAcessoRepository';
+
 interface EstatisticasLink {
+    fingerprint: ResumoFingerprint;
+    acessosRecentes: Acesso[];
     link: {
         id: number;
         urlOriginal: string;

@@ -10,7 +10,7 @@ const controller = new LinkController(servico);
 function resposta() {
     return { locals: {}, status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis(), set: jest.fn().mockReturnThis(), redirect: jest.fn() } as unknown as Response;
 }
-const req = { body: { urlOriginal: link.urlOriginal }, params: { id: 1, urlCurta: 'abc123' }, query: {}, headers: {}, get: jest.fn() } as unknown as Request;
+const req = { body: { urlOriginal: link.urlOriginal }, params: { id: 1, urlCurta: 'abc123' }, query: {}, headers: {}, method: 'GET', path: '/abc123', originalUrl: '/abc123', get: jest.fn() } as unknown as Request;
 describe('LinkController', () => {
     beforeEach(() => jest.resetAllMocks());
     it('retorna pagina de links', async () => {

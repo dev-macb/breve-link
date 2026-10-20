@@ -8,6 +8,20 @@ export interface LinkCurto {
 export interface Pagina<T> { itens: T[]; total: number; pagina: number; limite: number; totalPaginas: number; }
 export interface DadosLink { urlOriginal: string; urlCurta?: string; expiraEm: string | null; ativo?: boolean; }
 export interface Estatisticas {
+    fingerprint: {
+        hashesDistintos: number; acessosComHash: number;
+        grupos: { hashDispositivo: string; acessos: number; primeiroAcesso: string; ultimoAcesso: string }[];
+    };
+    acessosRecentes: {
+        id: number; criadoEm: string | number; ip: string | null;
+        navegador: string | null; sistemaOperacional: string | null; dispositivo: string | null;
+        pais: string | null; cidade: string | null; referrer: string | null;
+        userAgent: string | null; idioma: string | null;
+        versaoNavegador: string | null; versaoSistemaOperacional: string | null;
+        hashDispositivo: string | null; metodo: string | null; caminho: string | null;
+        clientHints: string | null; fetchSite: string | null; fetchMode: string | null; fetchDest: string | null;
+        dnt: string | null; gpc: string | null;
+    }[];
     link: Pick<LinkCurto, 'id' | 'urlOriginal' | 'urlCurta' | 'criadoEm'>;
     totalAcessos: number; acessosPorDia: { data: string; acessos: number }[];
     dispositivos: {
