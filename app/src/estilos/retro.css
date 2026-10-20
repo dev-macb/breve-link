@@ -124,7 +124,8 @@ select {
 }
 .app-layout {
     flex-direction: column;
-    max-width: 1120px;
+    width: calc(100% - 32px);
+    max-width: 960px;
     margin: auto;
     border-inline: 1px solid var(--border);
     background: var(--bg);
@@ -132,7 +133,7 @@ select {
 .sidebar {
     position: static;
     width: 100%;
-    padding: 18px 28px;
+    padding: 18px 48px;
     flex-direction: row;
     align-items: center;
     gap: 32px;
@@ -186,7 +187,7 @@ select {
     margin: 0;
 }
 .main-content {
-    padding: 40px 28px 48px;
+    padding: 40px 48px 48px;
 }
 .page-heading {
     margin-bottom: 25px;
@@ -389,7 +390,7 @@ select {
     margin-top: 17px;
 }
 .app-footer {
-    padding: 14px 28px;
+    padding: 14px 48px;
     font-size: 10px;
     border-top-style: dashed;
 }
@@ -485,17 +486,17 @@ select {
 @media (max-width: 850px) {
     .sidebar {
         width: 100%;
-        padding: 16px 21px;
+        padding: 16px 32px;
         gap: 16px;
     }
     .workspace-main {
         margin: 0;
     }
     .main-content {
-        padding: 30px 21px;
+        padding: 30px 32px;
     }
     .app-footer {
-        padding-inline: 21px;
+        padding-inline: 32px;
     }
     .user-info strong {
         max-width: 120px;
@@ -528,7 +529,7 @@ select {
     }
     .sidebar {
         display: flex;
-        padding: 16px;
+        padding: 16px 24px;
         gap: 12px;
     }
     .sidebar > .brand {
@@ -542,10 +543,11 @@ select {
         display: none;
     }
     .app-layout {
+        width: calc(100% - 16px);
         border: 0;
     }
     .main-content {
-        padding: 28px 16px;
+        padding: 28px 24px;
     }
     .page-heading h1 {
         font-size: 26px;
@@ -583,7 +585,7 @@ select {
         height: 34px;
     }
     .app-footer {
-        padding-inline: 16px;
+        padding-inline: 24px;
         font-size: 9px;
         overflow-wrap: anywhere;
     }
