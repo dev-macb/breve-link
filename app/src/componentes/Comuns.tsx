@@ -12,7 +12,7 @@ export function Marca({ compacta = false }: { compacta?: boolean }) {
             </span>
             {!compacta && (
                 <span>
-                    breve<span className="brand-light">_link</span>
+                    breve<span className="brand-light">-link</span>
                     <span className="brand-dot">/</span>
                 </span>
             )}

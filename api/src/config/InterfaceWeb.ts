@@ -70,7 +70,7 @@ export const erroPublico: ErrorRequestHandler = (erro, req, res, next) => {
 <body>
     <main aria-labelledby="pagina-titulo">
         <div class="public-panel">
-            <a class="marca" href="/" aria-label="Breve Link, início"><span class="marca-simbolo" aria-hidden="true">[b]</span><span>breve_link<span class="marca-ponto">/</span></span></a>
+            <a class="marca" href="/" aria-label="Breve Link, início"><span class="marca-simbolo" aria-hidden="true">[b]</span><span>breve-link<span class="marca-ponto">/</span></span></a>
             <h1 id="pagina-titulo">${titulo}</h1>
             <p>${mensagem}</p>
             <a class="public-page-action" href="/">Voltar ao início</a>

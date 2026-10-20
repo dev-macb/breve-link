@@ -49,7 +49,7 @@ export function Layout() {
                     <Outlet />
                 </main>
                 <footer className="app-footer">
-                    <span>breve_link // {origemPublica.replace(/^https?:\/\//, '')}</span>
+                    <span>breve-link // {origemPublica.replace(/^https?:\/\//, '')}</span>
                     <span>[ @dev-macb ]</span>
                 </footer>
             </div>
