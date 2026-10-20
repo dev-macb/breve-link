@@ -1,3 +1,4 @@
+import { Breadcrumb } from '../componentes/Breadcrumb';
 import { ConfirmarExclusaoLink } from '../funcionalidades/links/ConfirmarExclusaoLink';
 import { useListaLinks } from '../funcionalidades/links/useListaLinks';
 import { LinhaLink } from '../funcionalidades/links/LinhaLink';
@@ -95,7 +96,9 @@ export function Dashboard() {
         <div className="access-console dashboard-console">
             <header className="page-heading stats-heading">
                 <div>
-                    <span className="eyebrow">BREVE / LINK INDEX</span>
+                    <Breadcrumb
+                        itens={[{ rotulo: 'BREVE' }, { rotulo: 'LINKS', destino: '/dashboard' }]}
+                    />
                     <h1>
                         <span className="console-prompt">&gt;_</span> links
                     </h1>
@@ -244,10 +247,6 @@ export function Dashboard() {
                     </>
                 )}
             </section>
-            <footer className="console-foot">
-                {filtro ? 'Filtro aplicado · ' : ''}ativos e acessos: página atual · {links.length}{' '}
-                registros exibidos
-            </footer>
             {editando !== undefined && (
                 <FormularioLink
                     key={editando?.id ?? 'novo'}

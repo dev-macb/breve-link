@@ -1,55 +1,112 @@
 :root {
+    --bg: #090a09;
+    --text: #d4d7cc;
+    --muted: #a1a798;
+    --border: #343b32;
+    --accent: #6699ff;
+    --accent-hover: #99bbff;
     color-scheme: dark;
     font-family: 'Courier New', Courier, monospace;
-    background: #090a09;
-    color: #d4d7cc;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+:root[data-theme='light'] {
+    --bg: #e8e6dc;
+    --text: #20271f;
+    --muted: #4b5547;
+    --border: #8e9587;
+    --accent: #0000ee;
+    --accent-hover: #0000aa;
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    min-height: 100dvh;
-    display: grid;
-    place-items: center;
+    background-image: radial-gradient(var(--border) 0.5px, transparent 0.5px);
+    background-size: 5px 5px;
 }
 
 main {
-    width: min(34rem, calc(100% - 64px));
-    padding: 28px;
-    border: 1px solid #343b32;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 32px 24px;
+}
+
+.public-panel {
+    width: 100%;
+    max-width: 320px;
 }
 
 h1 {
-    font-size: clamp(1.5rem, 5vw, 2rem);
+    margin: 0 0 8px;
+    font-size: 28px;
     line-height: 1.3;
     letter-spacing: -1px;
 }
 
 p {
-    color: #a1a798;
-    line-height: 1.8;
+    margin: 0 0 28px;
+    color: var(--muted);
     font-size: 13px;
 }
 
 a {
-    color: #6699ff;
-    text-underline-offset: 0.3em;
-    font-size: 13px;
+    text-decoration: none;
 }
 
 a:focus-visible {
-    outline: 2px solid #99bbff;
-    outline-offset: 6px;
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 4px;
 }
 
 .marca {
-    display: inline-block;
-    font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text);
+    font-size: 21px;
     font-weight: 700;
-    text-decoration: none;
-    margin-bottom: 2rem;
+    letter-spacing: -1px;
+    margin-bottom: 32px;
 }
 
-.marca::before {
-    content: '[b] ';
-    color: #6699ff;
+.marca-simbolo {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 30px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 16px;
+    letter-spacing: -2px;
+}
+
+.marca-ponto {
+    color: var(--accent);
+}
+
+.public-page-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 12px;
+    border: 1px solid var(--accent);
+    background: #0000ff;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.public-page-action:hover {
+    background: #0000cc;
+    border-color: var(--accent-hover);
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { AlertCircle, Loader2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import '../estilos/login.css';
 
 export function Marca({ compacta = false }: { compacta?: boolean }) {
     return (
@@ -116,19 +117,18 @@ export function NaoEncontrado({ integrada = false }: { integrada?: boolean }) {
 }
 export function LinkIndisponivel() {
     return (
-        <div className="standalone">
-            <Marca />
-            <div className="empty-state">
-                <span className="eyebrow">LINK INDISPONÍVEL</span>
-                <h1>Esta conexão está em pausa.</h1>
-                <p>
+        <main className="login-page" id="conteudo" aria-labelledby="pausa-titulo">
+            <div className="login-panel">
+                <Marca />
+                <h1 id="pausa-titulo">Esta conexão está em pausa.</h1>
+                <p className="login-description">
                     O link pode ter expirado ou sido desativado. Peça um novo endereço a quem o
                     compartilhou.
                 </p>
-                <Link className="button secondary" to="/">
+                <Link className="button primary public-page-action" to="/">
                     Voltar ao início
                 </Link>
             </div>
-        </div>
+        </main>
     );
 }

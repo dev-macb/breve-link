@@ -1,23 +1,18 @@
 import { useState, useEffect } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, LogOut, Moon } from 'lucide-react';
+import { Outlet } from 'react-router-dom';
 import { useSessao } from '../app/Sessao';
 import { useAviso } from '../app/Avisos';
 import { mensagemErro } from '../services/http';
 import { Marca } from './Comuns';
+import { MenuConta } from './MenuConta';
 
 export function Layout() {
     const { usuario, origemPublica, sair } = useSessao();
     const aviso = useAviso();
-    const local = useLocation();
     const [saindo, setSaindo] = useState(false);
-    const [tema, setTema] = useState(() => {
-        try {
-            return localStorage.getItem('breve:tema') || 'dark';
-        } catch {
-            return 'dark';
-        }
-    });
+    const [tema, setTema] = useState(() =>
+        document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+    );
     useEffect(() => {
         document.documentElement.dataset.theme = tema;
         try {
@@ -46,43 +41,10 @@ export function Layout() {
                         <strong>{usuario?.nome}</strong>
                         <small>Administrador</small>
                     </span>
-                    <button
-                        className="icon-button"
-                        aria-label="Sair da conta"
-                        title="Sair da conta"
-                        onClick={encerrar}
-                        disabled={saindo}
-                    >
-                        <LogOut size={18} />
-                    </button>
+                    <MenuConta tema={tema} alterarTema={setTema} saindo={saindo} sair={encerrar} />
                 </div>
             </header>
             <div className="workspace-main">
-                <div className="topbar">
-                    <nav aria-label="Navegação principal">
-                        <NavLink
-                            to="/dashboard"
-                            className={({ isActive }) =>
-                                'nav-link ' +
-                                (isActive || local.pathname.startsWith('/links/') ? 'active' : '')
-                            }
-                        >
-                            <LayoutDashboard size={16} /> Meus links
-                        </NavLink>
-                    </nav>
-                    <div className="theme-control">
-                        <Moon size={15} />
-                        <select
-                            aria-label="Tema da interface"
-                            value={tema}
-                            onChange={(evento) => setTema(evento.target.value)}
-                        >
-                            <option value="dark">Escuro</option>
-                            <option value="light">Claro</option>
-                            <option value="system">Sistema</option>
-                        </select>
-                    </div>
-                </div>
                 <main id="conteudo" className="main-content">
                     <Outlet />
                 </main>

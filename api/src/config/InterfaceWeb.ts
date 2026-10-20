@@ -58,6 +58,25 @@ export const erroPublico: ErrorRequestHandler = (erro, req, res, next) => {
         .set('Cache-Control', 'no-store')
         .type('html')
         .send(
-            `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${titulo} — Breve Link</title><link rel="stylesheet" href="/erro.css"></head><body><main><a class="marca" href="/">brevelink.</a><p>${erro.status}</p><h1>${titulo}</h1><p>${mensagem}</p><a href="/dashboard">Ir para meus links →</a></main></body></html>`
+            `<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>${titulo} — Breve Link</title>
+    <script src="/tema.js"></script>
+    <link rel="stylesheet" href="/erro.css">
+</head>
+<body>
+    <main aria-labelledby="pagina-titulo">
+        <div class="public-panel">
+            <a class="marca" href="/" aria-label="Breve Link, início"><span class="marca-simbolo" aria-hidden="true">[b]</span><span>breve_link<span class="marca-ponto">/</span></span></a>
+            <h1 id="pagina-titulo">${titulo}</h1>
+            <p>${mensagem}</p>
+            <a class="public-page-action" href="/">Voltar ao início</a>
+        </div>
+    </main>
+</body>
+</html>`
         );
 };

@@ -60,6 +60,10 @@ describe('Integração de arquivos e páginas', () => {
     it('preserva 410 e oferece HTML sem expor dados do erro', async () => {
         const res = await request(app).get('/pausado').set('Accept', 'text/html').expect(410);
         expect(res.text).toContain('Esta conexão está em pausa.');
+        expect(res.text).toContain('<script src="/tema.js"></script>');
+        expect(res.text.indexOf('src="/tema.js"')).toBeLessThan(
+            res.text.indexOf('href="/erro.css"')
+        );
         expect(res.headers['cache-control']).toBe('no-store');
         const json = await request(app)
             .get('/pausado')

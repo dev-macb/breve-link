@@ -133,7 +133,8 @@ O schema de coordenadas e os dados históricos foram preservados. `/collect`
 atualiza apenas o clique associado a um token de uso único ainda válido; novos
 redirects não emitem tokens. `geolocalizacao` nas estatísticas mantém contagens,
 estados, taxa de capturas sobre resultados recebidos e agrupamento aproximado
-por células de 0,01 grau. A aplicação não acompanha a navegação no destino.
+por células de 0,01 grau. O painel exibe somente a localização aproximada por IP.
+A aplicação não acompanha a navegação no destino.
 
 ## Organização do código
 

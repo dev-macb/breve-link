@@ -10,14 +10,11 @@ export function Fingerprints({
 }) {
     const horario = (valor: string) => dataApi(valor).toLocaleString('pt-BR', { timeZone: 'UTC' });
     return (
-        <section className="chart-panel">
-            <header>
-                <h2>04 / fingerprints</h2>
-                <span className="muted-label">TOP 20 · UTC</span>
-            </header>
-            <p className="console-foot">
+        <details className="access-fingerprints">
+            <summary>Fingerprints por frequência</summary>
+            <p className="fingerprint-description">
                 {numero(dados.hashesDistintos)} distintos · {numero(dados.acessosComHash)} de{' '}
-                {numero(total)} acessos com hash
+                {numero(total)} acessos com hash · top 20 · UTC
             </p>
             {!dados.grupos.length ? (
                 <p className="distribution-empty">Sem fingerprints.</p>
@@ -47,6 +44,6 @@ export function Fingerprints({
                     </table>
                 </div>
             )}
-        </section>
+        </details>
     );
 }

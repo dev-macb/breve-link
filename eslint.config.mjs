@@ -53,5 +53,6 @@ export default tseslint.config(
     },
     { files: ['app/vite.config.ts'], languageOptions: { globals: globals.node } },
     { files: ['api/src/migrations/**/*.ts'], rules: { curly: 'off' } },
+    { files: ['app/public/**/*.js'], languageOptions: { globals: globals.browser } },
     { files: ['**/*.mjs'], languageOptions: { globals: globals.node } }
 );

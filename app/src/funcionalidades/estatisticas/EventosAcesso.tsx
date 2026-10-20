@@ -1,11 +1,20 @@
 import type { Estatisticas } from '../../tipos';
 import { dataApi, nomePais } from '../../utils/formatar';
+import { Fingerprints } from '../../componentes/Fingerprints';
 
-export function EventosAcesso({ acessos }: { acessos: Estatisticas['acessosRecentes'] }) {
+export function EventosAcesso({
+    acessos,
+    fingerprint,
+    total
+}: {
+    acessos: Estatisticas['acessosRecentes'];
+    fingerprint: Estatisticas['fingerprint'];
+    total: number;
+}) {
     return (
         <section className="chart-panel console-log">
             <header>
-                <h2>02 / eventos</h2>
+                <h2>03 / eventos e fingerprints</h2>
                 <span className="muted-label">ÚLTIMOS 100 · UTC</span>
             </header>
             {!acessos?.length ? (
@@ -99,6 +108,7 @@ export function EventosAcesso({ acessos }: { acessos: Estatisticas['acessosRecen
                     </details>
                 ))
             )}
+            <Fingerprints dados={fingerprint} total={total} />
         </section>
     );
 }

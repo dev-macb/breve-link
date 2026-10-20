@@ -7,7 +7,6 @@ export interface Usuario {
 }
 
 export interface LinkCurto {
-    geo?: boolean;
     id: number;
     urlOriginal: string;
     urlCurta: string;
@@ -27,7 +26,6 @@ export interface Pagina<T> {
 }
 
 export interface DadosLink {
-    geo?: boolean;
     urlOriginal: string;
     urlCurta?: string;
     expiraEm: string | null;
@@ -35,13 +33,6 @@ export interface DadosLink {
 }
 
 export interface Estatisticas {
-    geolocalizacao?: {
-        capturadas: number;
-        total: number;
-        taxaAprovacao: number;
-        porStatus: Record<string, number>;
-        clusters: { lat: number; lon: number; total: number }[];
-    };
     fingerprint: {
         hashesDistintos: number;
         acessosComHash: number;

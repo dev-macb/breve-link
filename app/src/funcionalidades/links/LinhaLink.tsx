@@ -25,6 +25,11 @@ export function LinhaLink({
     return (
         <div className="link-row" role="row">
             <div className="link-cell" role="cell">
+                <Link
+                    className="link-row-stats"
+                    to={'/links/' + link.id}
+                    aria-label={'Ver estatísticas de ' + link.urlCurta}
+                />
                 <span className="link-tile">
                     <Link2 size={19} />
                 </span>
@@ -67,14 +72,6 @@ export function LinhaLink({
                 >
                     {copiado ? <Check size={16} /> : <Copy size={16} />}
                 </button>
-                <Link
-                    className="icon-button"
-                    to={'/links/' + link.id}
-                    title="Ver estatísticas"
-                    aria-label={'Ver estatísticas de ' + link.urlCurta}
-                >
-                    <BarChart3 size={16} />
-                </Link>
                 <button
                     className="icon-button"
                     onClick={() => editar(link)}

@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useSessao } from '../app/Sessao';
 import { mensagemErro } from '../services/http';
 import { Marca } from '../componentes/Comuns';
+import '../estilos/login.css';
 
 export function Login() {
     const { usuario, entrar } = useSessao();
@@ -41,110 +42,72 @@ export function Login() {
         }
     }
     return (
-        <div className="login-layout">
-            <section className="login-story">
+        <main className="login-page" id="conteudo" aria-labelledby="login-titulo">
+            <div className="login-panel">
                 <Marca />
-                <div className="story-content">
-                    <span className="eyebrow">// NEM TODO CAMINHO É ÓBVIO</span>
-                    <h1>
-                        Um atalho
-                        <br />
-                        <em>no escuro.</em>
-                    </h1>
-                    <p>
-                        Endereços curtos.
-                        <br />
-                        Destinos sob seu controle.
-                    </p>
-                    <pre className="terminal-art" aria-hidden="true">{`     .-----------------.
-     |  origem         |
-     '--------+--------'
-              |
-         [ breve ]
-              |
-     .--------+--------.
-     |         destino |
-     '-----------------'`}</pre>
-                </div>
-            </section>
-
-            <section className="login-form-section" id="conteudo">
-                <div className="login-mobile-brand">
-                    <Marca />
-                </div>
-                <div className="login-form-wrap">
-                    <span className="login-icon">
-                        <LockKeyhole size={20} />
-                    </span>
-                    <span className="eyebrow">[ ACESSO RESTRITO ]</span>
-                    <h2>
-                        Identifique-se<span className="heading-dot">_</span>
-                    </h2>
-                    <p
-                        id="login-mensagem"
-                        className={'login-description' + (erro ? ' login-description-error' : '')}
-                        role={erro ? 'alert' : undefined}
-                    >
-                        {erro || 'Entre para administrar seus links.'}
-                    </p>
-                    <form onSubmit={enviar} aria-busy={enviando} aria-describedby="login-mensagem">
-                        <label htmlFor="email">E-mail</label>
+                <h1 id="login-titulo">Entrar</h1>
+                <p
+                    className={'login-description' + (erro ? ' login-description-error' : '')}
+                    id="login-descricao"
+                    role={erro ? 'alert' : undefined}
+                >
+                    {erro || 'Acesse seus links.'}
+                </p>
+                <form
+                    onSubmit={enviar}
+                    aria-busy={enviando}
+                    className="login-form"
+                    aria-describedby="login-descricao"
+                >
+                    <label htmlFor="email">E-mail</label>
+                    <input
+                        id="email"
+                        type="email"
+                        autoComplete="username"
+                        required
+                        autoFocus
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="voce@exemplo.com"
+                        disabled={enviando}
+                    />
+                    <label htmlFor="senha">Senha</label>
+                    <div className="login-password">
                         <input
-                            id="email"
-                            type="email"
-                            autoComplete="username"
+                            id="senha"
+                            type={mostrar ? 'text' : 'password'}
+                            autoComplete="current-password"
                             required
-                            autoFocus
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="voce@exemplo.com"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            placeholder="Sua senha"
                             disabled={enviando}
                         />
-                        <label htmlFor="senha">Senha</label>
-                        <div className="password-field">
-                            <input
-                                id="senha"
-                                type={mostrar ? 'text' : 'password'}
-                                autoComplete="current-password"
-                                required
-                                value={senha}
-                                onChange={(e) => setSenha(e.target.value)}
-                                placeholder="Sua senha"
-                                disabled={enviando}
-                            />
-                            <button
-                                type="button"
-                                className="icon-button"
-                                aria-label={mostrar ? 'Ocultar senha' : 'Mostrar senha'}
-                                onClick={() => setMostrar(!mostrar)}
-                                disabled={enviando}
-                            >
-                                {mostrar ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                        </div>
                         <button
-                            className="button primary login-submit"
-                            type="submit"
+                            type="button"
+                            className="icon-button"
+                            aria-label={mostrar ? 'Ocultar senha' : 'Mostrar senha'}
+                            onClick={() => setMostrar(!mostrar)}
                             disabled={enviando}
                         >
-                            {enviando ? (
-                                <>
-                                    <Loader2 className="spin" size={18} /> Entrando…
-                                </>
-                            ) : (
-                                <>
-                                    Entrar
-                                    <ArrowRight size={18} />
-                                </>
-                            )}
+                            {mostrar ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
-                    </form>
-
-                    <p className="login-help">
-                        <LockKeyhole size={12} /> Somente administradores.
-                    </p>
-                </div>
-            </section>
-        </div>
+                    </div>
+                    <button
+                        className="button primary login-submit"
+                        type="submit"
+                        disabled={enviando}
+                    >
+                        {enviando ? (
+                            <>
+                                <Loader2 className="spin" size={18} /> Entrando…
+                            </>
+                        ) : (
+                            <>Entrar</>
+                        )}
+                    </button>
+                </form>
+            </div>
+        </main>
     );
 }

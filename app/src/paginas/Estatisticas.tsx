@@ -1,12 +1,11 @@
+import { Breadcrumb } from '../componentes/Breadcrumb';
 import { useEstatisticas } from '../funcionalidades/estatisticas/useEstatisticas';
 import { Distribuicao } from '../funcionalidades/estatisticas/Distribuicao';
 import { EventosAcesso } from '../funcionalidades/estatisticas/EventosAcesso';
 import { GraficoTrafego } from '../funcionalidades/estatisticas/GraficoTrafego';
-import { ResumoGeolocalizacao } from '../funcionalidades/estatisticas/ResumoGeolocalizacao';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
-    ArrowLeft,
     ArrowUpRight,
     Copy,
     Globe2,
@@ -20,7 +19,6 @@ import { useSessao } from '../app/Sessao';
 import { useAviso } from '../app/Avisos';
 import { Carregando, Falha, NaoEncontrado } from '../componentes/Comuns';
 import { dataCurta, enderecoCurto, nomePais, numero, serieDiaria } from '../utils/formatar';
-import { Fingerprints } from '../componentes/Fingerprints';
 
 export function EstatisticasPagina() {
     const { id = '' } = useParams();
@@ -55,13 +53,15 @@ export function EstatisticasPagina() {
     }
     return (
         <div className="access-console">
-            <Link className="back-link" to="/dashboard">
-                <ArrowLeft size={15} />
-                ../links
-            </Link>
             <header className="page-heading stats-heading">
                 <div>
-                    <span className="eyebrow">BREVE / ACCESS LOG</span>
+                    <Breadcrumb
+                        itens={[
+                            { rotulo: 'BREVE' },
+                            { rotulo: 'LINKS', destino: '/dashboard' },
+                            { rotulo: dados.link.urlCurta, destino: '/links/' + id }
+                        ]}
+                    />
                     <h1>
                         <span className="console-prompt">&gt;_</span> acessos
                     </h1>
@@ -118,11 +118,9 @@ export function EstatisticasPagina() {
                     <strong>{numero(dados.fingerprint.hashesDistintos)}</strong>
                 </div>
             </section>
-            <ResumoGeolocalizacao dados={dados.geolocalizacao} />
             <GraficoTrafego serie={serie} totalPeriodo={totalPeriodo} />
-            <EventosAcesso acessos={dados.acessosRecentes} />
             <details className="console-section">
-                <summary>03 / clientes e origens</summary>
+                <summary>02 / clientes e origens</summary>
                 <div className="distributions">
                     <Distribuicao
                         titulo="Navegadores"
@@ -164,11 +162,11 @@ export function EstatisticasPagina() {
                     />
                 </div>
             </details>
-            <Fingerprints dados={dados.fingerprint} total={dados.totalAcessos} />
-            <footer className="console-foot">
-                UTC · inclui bots · hashes ≠ pessoas · geo por IP aproximada · hash em{' '}
-                {numero(dados.fingerprint.acessosComHash)} acessos
-            </footer>
+            <EventosAcesso
+                acessos={dados.acessosRecentes}
+                fingerprint={dados.fingerprint}
+                total={dados.totalAcessos}
+            />
         </div>
     );
 }
