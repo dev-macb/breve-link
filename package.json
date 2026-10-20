@@ -4,7 +4,6 @@
     "private": true,
     "repository": "https://github.com/dev-macb/breve-link.git",
     "author": "Miguel Alves Cordeiro Braz <dev.macb@gmail.com>",
-    "license": "MIT",
     "workspaces": [
         "api",
         "app"

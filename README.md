@@ -160,5 +160,3 @@ npm test -- --runInBand
 npm run test:app
 npm run build
 ```
-
-Licença [MIT](LICENSE).
