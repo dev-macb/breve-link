@@ -1,0 +1,64 @@
+# Exemplos para REST Client. Mantenha segredos fora do versionamento.
+@base = http://localhost:3000
+@sessao = COLE_APENAS_O_VALOR_DO_COOKIE_breve_sessao
+@email = {{$processEnv ADMIN_EMAIL}}
+@senha = {{$processEnv ADMIN_SENHA}}
+
+### Login: retorna 204 e Set-Cookie, sem token no corpo
+POST {{base}}/api/auth/login
+Content-Type: application/json
+X-Breve-CSRF: 1
+
+{
+    "email": "{{email}}",
+    "senha": "{{senha}}"
+}
+
+### Sessão atual
+GET {{base}}/api/auth/me
+Cookie: breve_sessao={{sessao}}
+
+### Listar usuários
+GET {{base}}/api/usuarios?pagina=1&limite=10
+Cookie: breve_sessao={{sessao}}
+
+### Consultar usuário
+GET {{base}}/api/usuarios/1
+Cookie: breve_sessao={{sessao}}
+
+### Criar usuário de exemplo
+POST {{base}}/api/usuarios
+Cookie: breve_sessao={{sessao}}
+Content-Type: application/json
+X-Breve-CSRF: 1
+
+{
+    "nome": "Usuario Exemplo",
+    "email": "usuario@example.com",
+    "senha": "{{senha}}",
+    "ativo": true,
+    "administrador": false
+}
+
+### Atualizar usuário
+PATCH {{base}}/api/usuarios/2
+Cookie: breve_sessao={{sessao}}
+Content-Type: application/json
+X-Breve-CSRF: 1
+
+{
+    "nome": "Nome Atualizado"
+}
+
+### Remover usuário de exemplo
+DELETE {{base}}/api/usuarios/2
+Cookie: breve_sessao={{sessao}}
+X-Breve-CSRF: 1
+
+### Logout invalida todas as sessões da conta
+POST {{base}}/api/auth/logout
+Cookie: breve_sessao={{sessao}}
+Content-Type: application/json
+X-Breve-CSRF: 1
+
+{}

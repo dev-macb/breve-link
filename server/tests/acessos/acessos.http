@@ -1,0 +1,6 @@
+@base = http://localhost:3000
+@sessao = COLE_APENAS_O_VALOR_DO_COOKIE_breve_sessao
+
+### Estatísticas agregadas; não há endpoint público de listagem de acessos
+GET {{base}}/api/links/1/stats
+Cookie: breve_sessao={{sessao}}

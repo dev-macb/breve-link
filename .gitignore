@@ -3,9 +3,19 @@
 *.sqlite
 yarn.lock
 yarn-error.log
-package-lock.json
 
 
 # Ignorar diretórios do projeto
 /build
 /node_modules
+/.npm-cache/
+**/node_modules/
+**/build/
+**/dist/
+**/coverage/
+/server/public/
+/data/
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm

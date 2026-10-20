@@ -1,0 +1,44 @@
+@base = http://localhost:3000
+@sessao = COLE_APENAS_O_VALOR_DO_COOKIE_breve_sessao
+
+### Listar links
+GET {{base}}/api/links?pagina=1&limite=10
+Cookie: breve_sessao={{sessao}}
+
+### Consultar link
+GET {{base}}/api/links/1
+Cookie: breve_sessao={{sessao}}
+
+### Criar link
+POST {{base}}/api/links
+Cookie: breve_sessao={{sessao}}
+Content-Type: application/json
+X-Breve-CSRF: 1
+
+{
+    "urlOriginal": "https://example.com",
+    "urlCurta": "exemplo",
+    "expiraEm": null
+}
+
+### Atualizar link
+PATCH {{base}}/api/links/1
+Cookie: breve_sessao={{sessao}}
+Content-Type: application/json
+X-Breve-CSRF: 1
+
+{
+    "ativo": false
+}
+
+### Remover link
+DELETE {{base}}/api/links/1
+Cookie: breve_sessao={{sessao}}
+X-Breve-CSRF: 1
+
+### Redirecionamento público preservado
+GET {{base}}/links/redirecionar/exemplo
+
+### Estatísticas
+GET {{base}}/api/links/1/stats
+Cookie: breve_sessao={{sessao}}
