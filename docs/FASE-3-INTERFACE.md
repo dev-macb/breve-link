@@ -127,6 +127,19 @@ npm run build
 O QA usa uma conta sintética e um SQLite temporário, sem dados de produção. Os
 processos e dados temporários são removidos ao encerrar a verificação.
 
+## Filtros da listagem na URL
+
+A listagem usa os parâmetros `filtro`, `pagina` e `limite`, por exemplo:
+`/dashboard?filtro=docs&pagina=2&limite=20`. Abrir ou atualizar esse endereço
+restaura os controles e a consulta, assim como voltar/avançar no navegador.
+
+Busca vazia, página 1 e limite 10 são omitidos da URL. Alterar a busca ou o
+limite retorna à primeira página. A busca atualiza o endereço sem criar uma
+entrada de histórico por tecla e mantém o intervalo de 300 ms entre alterações
+antes de consultar a API; paginação e tamanho da lista criam entradas no histórico.
+Páginas inválidas usam 1, limites fora de 10/20/50 usam 10 e o filtro aceita até
+200 caracteres. Parâmetros adicionais são preservados.
+
 ## Integração do build
 
 A integração foi concluída na [Fase 4](FASE-4-INTEGRACAO.md): após `npm run build`,

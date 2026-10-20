@@ -7,7 +7,7 @@ export function dataApi(valor: string | number): Date {
 }
 export function dataCurta(valor: string | number): string {
     const data = dataApi(valor);
-    return Number.isNaN(data.getTime()) ? 'Data indisponível' : new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(data);
+    return Number.isNaN(data.getTime()) ? 'Data indisponível' : new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(data);
 }
 export function dataFormulario(valor?: string | number | null): string {
     if (valor == null) return '';

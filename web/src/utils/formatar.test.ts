@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dataApi, enderecoCurto, estadoLink, nomePais, serieDiaria } from './formatar';
+import { dataApi, dataCurta, enderecoCurto, estadoLink, nomePais, serieDiaria } from './formatar';
 import type { LinkCurto } from '../tipos';
 
 describe('Datas e estados dos links', () => {
@@ -7,6 +7,10 @@ describe('Datas e estados dos links', () => {
     it('interpreta timestamp do SQLite explicitamente em UTC', () => {
         expect(dataApi('2026-10-19 14:30:00').toISOString()).toBe('2026-10-19T14:30:00.000Z');
         expect(dataApi('2026-10-19 14:30:00+00:00').toISOString()).toBe('2026-10-19T14:30:00.000Z');
+    });
+    it('apresenta datas numericas com dia, mes e ano completos', () => {
+        expect(dataCurta(new Date(2026, 0, 5, 12).getTime())).toBe('05/01/2026');
+        expect(dataCurta('invalida')).toBe('Data indisponível');
     });
     it('trata epoch zero e data invalida como expiracao', () => {
         expect(estadoLink({ ...link, expiraEm: 0 })).toBe('Expirado');
