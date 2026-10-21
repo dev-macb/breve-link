@@ -170,3 +170,18 @@ proxy compartilhado da VPS. O Compose usa `proxy`, `breve-link-http:6001` e a ra
 `https://breve-link.macb.tech`. `APP_CAMINHO_BASE` configura um prefixo opcional, como
 `/breve-link`, para painel, API, cookies e links curtos. `APP_ORIGEM` continua
 sendo somente a origem HTTPS. Alterar o prefixo exige recompilar o frontend.
+
+## Deploy automático
+
+O fluxo de entrega usa `dev` para desenvolvimento e `main` para produção:
+
+1. Enviar as alterações para `dev` e abrir um pull request para `main`.
+2. Aguardar as verificações de código, os testes e o build no GitHub Actions.
+3. Fazer o merge para iniciar o deploy automático na VPS.
+
+O deploy publica o commit aprovado pelo CI e só conclui após os contêineres
+ficarem saudáveis. Pushes em `dev` e pull requests executam as verificações,
+sem publicar em produção.
+
+Consulte [DEPLOY.md](DEPLOY.md) para configurar os secrets SSH, o environment
+`production` e os pré-requisitos do servidor antes do primeiro merge.

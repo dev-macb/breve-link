@@ -23,7 +23,7 @@ IP estável na infraestrutura. Não use `true`, nomes de redes ou CIDR `/0`.
 
 ```sh
 cd /srv/apps/breve-link
-git switch dev
+git switch main
 cp .env.example .env
 # Preencher .env sem substituir um ambiente existente.
 docker network inspect proxy
