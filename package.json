@@ -1,43 +1,45 @@
 {
-  "name": "breve-link",
-  "version": "1.1.0",
-  "private": true,
-  "repository": "https://github.com/dev-macb/breve-link.git",
-  "author": "Miguel Alves Cordeiro Braz <dev.macb@gmail.com>",
-  "license": "MIT",
-  "workspaces": [
-    "server",
-    "web"
-  ],
-  "scripts": {
-    "dev": "concurrently -k -n API,WEB -c green,blue \"npm:dev:server\" \"npm:dev:web\"",
-    "test": "npm run test --workspace @breve-link/server --",
-    "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "start": "npm run start --workspace @breve-link/server",
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "npm run lint -- --fix",
-    "knex:make:seed": "npm run knex:make:seed --workspace @breve-link/server --",
-    "knex:make:migrate": "npm run knex:make:migrate --workspace @breve-link/server --",
-    "knex:seed": "npm run knex:seed --workspace @breve-link/server --",
-    "knex:migrate": "npm run knex:migrate --workspace @breve-link/server --",
-    "knex:rollback": "npm run knex:rollback --workspace @breve-link/server --",
-    "knex:rollback-all": "npm run knex:rollback-all --workspace @breve-link/server --",
-    "dev:server": "npm run dev --workspace @breve-link/server",
-    "dev:web": "npm run dev --workspace @breve-link/web",
-    "test:web": "npm run test --workspace @breve-link/web --"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "concurrently": "^10.0.6",
-    "eslint": "^10.13.0",
-    "globals": "^17.13.0",
-    "typescript-eslint": "^8.72.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.7"
-  },
-  "engines": {
-    "node": "^22.13.0 || >=24",
-    "npm": ">=10"
-  }
+    "name": "breve-link",
+    "version": "1.1.0",
+    "private": true,
+    "repository": "https://github.com/dev-macb/breve-link.git",
+    "author": "Miguel Alves Cordeiro Braz <dev.macb@gmail.com>",
+    "workspaces": [
+        "api",
+        "app"
+    ],
+    "scripts": {
+        "dev": "concurrently -k -n API,APP -c green,blue \"npm:dev:api\" \"npm:dev:app\"",
+        "test": "npm run test --workspace @breve-link/api --",
+        "build": "npm run build --workspaces --if-present",
+        "typecheck": "npm run typecheck --workspaces --if-present",
+        "start": "npm run start --workspace @breve-link/api",
+        "lint": "eslint . --max-warnings 0",
+        "lint:fix": "npm run lint -- --fix",
+        "knex:make:seed": "npm run knex:make:seed --workspace @breve-link/api --",
+        "knex:make:migrate": "npm run knex:make:migrate --workspace @breve-link/api --",
+        "knex:seed": "npm run knex:seed --workspace @breve-link/api --",
+        "knex:migrate": "npm run knex:migrate --workspace @breve-link/api --",
+        "knex:rollback": "npm run knex:rollback --workspace @breve-link/api --",
+        "knex:rollback-all": "npm run knex:rollback-all --workspace @breve-link/api --",
+        "dev:api": "npm run dev --workspace @breve-link/api",
+        "dev:app": "npm run dev --workspace @breve-link/app",
+        "test:app": "npm run test --workspace @breve-link/app --",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "concurrently": "^10.0.6",
+        "eslint": "^10.13.0",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint-plugin-react-refresh": "^0.5.7",
+        "globals": "^17.13.0",
+        "prettier": "3.9.10",
+        "typescript-eslint": "^8.72.0"
+    },
+    "engines": {
+        "node": "^22.13.0 || >=24",
+        "npm": ">=10"
+    }
 }

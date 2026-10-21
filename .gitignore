@@ -13,7 +13,7 @@ yarn-error.log
 **/build/
 **/dist/
 **/coverage/
-/server/public/
+/api/public/
 /data/
 *.sqlite3
 *.sqlite-journal

@@ -1,0 +1,37 @@
+services:
+    breve-link:
+        build:
+            context: .
+            args:
+                APP_CAMINHO_BASE: ''
+        restart: unless-stopped
+        init: true
+        env_file: .env
+        environment:
+            NODE_ENV: production
+            APP_HOST: 0.0.0.0
+            APP_PORTA: 6001
+            APP_CAMINHO_BASE: ''
+            APP_ORIGEM: https://breve-link.macb.tech
+            BD_ARQUIVO: /app/database/base.sqlite
+            TRUST_PROXY: ${TRUST_PROXY:?Defina o IP ou CIDR do proxy autorizado pela VPS}
+        volumes:
+            - type: bind
+              source: /srv/data/breve-link
+              target: /app/database
+              bind:
+                  create_host_path: false
+        networks:
+            proxy:
+                aliases:
+                    - breve-link-http
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+                max-file: '3'
+
+networks:
+    proxy:
+        external: true
+        name: proxy

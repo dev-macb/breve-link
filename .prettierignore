@@ -1,0 +1,7 @@
+node_modules/
+**/build/
+**/dist/
+**/coverage/
+.npm-cache/
+package-lock.json
+api/src/migrations/

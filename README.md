@@ -1,91 +1,187 @@
-<h1 align="center">🔷 Breve Link 🔷</h1>
+# Breve Link
 
-<p align="center">
-    Um encurtador de URLs simples e eficiente construído com Node.js e TypeScript.
-</p>
+Encurtador de URLs com painel administrativo e estatísticas locais em SQLite.
 
-<p align="center">
-    <a href="https://github.com/dev-macb/breve-link/blob/main/LICENSE" target="_blank">
-        <img alt="GitHub license" src="https://img.shields.io/github/license/dev-macb/breve-link">
-    </a>
-    <a href="https://github.com/dev-macb/breve-link/stargazers" target="_blank">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/dev-macb/breve-link">
-    </a>
-    <a href="https://github.com/dev-macb/breve-link/network" target="_blank">
-        <img alt="GitHub forks" src="https://img.shields.io/github/forks/dev-macb/breve-link">
-    </a>
-</p>
+## Stack
 
+- `api/`: Node.js, TypeScript, Express 5, Inversify, Knex e SQLite.
+- `app/`: React, TypeScript e Vite.
+- `database/`: arquivo SQLite local (ignorado pelo Git).
+- npm workspaces; comandos executados na raiz.
 
----
+## Configuração e execução
 
+Requisitos: Node.js `^22.13.0 || >=24` e npm `>=10`.
 
-### ✨ Sobre o Projeto
-<strong>Breve Link</strong> é um encurtador de URLs robusto e fácil de usar, desenvolvido como uma API RESTful em <strong>Node.js</strong> com <strong>TypeScript</strong>. O objetivo principal deste projeto é transformar links longos e complexos em URLs curtas e amigáveis, ideais para compartilhamento em redes sociais, mensagens ou qualquer outro meio onde a concisão é valorizada. Este repositório contém todo o código-fonte, configurações e documentação necessários para você rodar, entender e até mesmo contribuir para o projeto.
-<p align="center">🔷</p>
-
-
-<h3 id="instalação">🔧 Instalação</h3>
-<p>
-    Para configurar e rodar o projeto, siga os passos abaixo no seu terminal.
-</p>
-
-```bash
-# Clone o repositório
-$ git clone https://github.com/dev-macb/breve-link
-
-# Acesse o diretório do projeto
-$ cd breve-link
-
-# Instale as dependências
-$ npm ci
-
-# Copie .env.example para .env e configure APP_ORIGEM, JWT_SEGREDO,
-# ADMIN_EMAIL e ADMIN_SENHA antes de inicializar
-
-# Execute as migrations e as seeds do banco de dados
-$ npm run knex:migrate
-$ npm run knex:seed
-
-# Executar projeto
-$ npm run dev
+```sh
+npm ci
 ```
 
-A API administrativa está sob `/api`, com sessão em cookie HttpOnly. Consulte
-[os contratos e instruções da Fase 1](docs/FASE-1-BACKEND.md) e os exemplos em
-`server/tests/**/*.http` para login, proteção CSRF e rotas atualizadas.
+Copie `.env.example` para `.env` na raiz e configure:
 
-### Estrutura e comandos
+| Variável                     | Finalidade                                                         |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `NODE_ENV`                   | `development`, `test` ou `production`                              |
+| `APP_HOST`, `APP_PORTA`      | Escuta HTTP; padrões `0.0.0.0` e `3000`                            |
+| `APP_ORIGEM`                 | Origem pública exata, sem barra final; HTTPS em produção           |
+| `APP_CAMINHO_BASE`           | Prefixo opcional sem barra final; vazio na raiz ou `/breve-link`   |
+| `JWT_SEGREDO`                | Segredo de sessão com pelo menos 32 bytes aleatórios               |
+| `ADMIN_EMAIL`, `ADMIN_SENHA` | Bootstrap do administrador; senha de 8 caracteres a 72 bytes UTF-8 |
+| `BD_ARQUIVO`                 | Arquivo SQLite; padrão `database/base.sqlite`, relativo à raiz     |
+| `CORS_ORIGENS`               | Origens adicionais permitidas, separadas por vírgula               |
+| `WEB_API_DESTINO`            | Destino do proxy Vite; padrão no exemplo: `http://127.0.0.1:3000`  |
+| `TRUST_PROXY`                | IPs/CIDRs dos proxies confiáveis, separados por vírgula            |
+| `LOG_LEVEL`                  | Nível de logs                                                      |
 
-O projeto usa npm workspaces: backend em `server/` e interface React em `web/`.
-O `.env`, o lockfile e os comandos principais ficam na raiz. `npm run dev` inicia
-API e interface; abra [o frontend local](http://localhost:5173) para acessar o painel.
+Gere o segredo:
 
-```bash
+```sh
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
+
+Inicialize o banco e a conta administrativa:
+
+```sh
+npm run knex:migrate
+npm run knex:seed
+npm run dev
+```
+
+Painel em [localhost:5173](http://localhost:5173); API na porta 3000 por padrão.
+Os links curtos usam `APP_ORIGEM`. O seed não altera contas existentes.
+Para iniciar separadamente: `npm run dev:api` ou `npm run dev:app`.
+
+Produção:
+
+```sh
 npm run build
+npm start
+```
+
+O Express serve `app/dist/` e a API. O backend compilado fica em `api/build/`.
+O servidor aplica migrations ao iniciar. Configure HTTPS no proxy, restrinja
+`TRUST_PROXY` aos proxies reais e mantenha o SQLite em armazenamento persistente.
+Antes de atualizar, pare a aplicação e faça backup do banco. A restauração deve
+usar uma versão do código compatível com o schema do backup.
+
+## API
+
+Corpos JSON. Mutações em `/api` exigem `X-Breve-CSRF: 1`; POST/PATCH também
+exigem `Content-Type: application/json`. Origens devem estar na configuração
+permitida. Clientes web devem enviar cookies (`credentials: 'include'`).
+
+| Método               | Rota                                | Acesso / função                                          |
+| -------------------- | ----------------------------------- | -------------------------------------------------------- |
+| GET                  | `/api/saude`                        | Público; testa conexão com o banco                       |
+| POST                 | `/api/auth/login`                   | Público; recebe `email` e `senha`                        |
+| GET                  | `/api/auth/me`                      | Autenticado; usuário atual                               |
+| POST                 | `/api/auth/logout`                  | Autenticado; revoga todas as sessões do usuário          |
+| GET                  | `/api/configuracao`                 | Autenticado; retorna `origemPublica`                     |
+| GET / POST           | `/api/links`                        | Administrador; listar / criar                            |
+| GET / PATCH / DELETE | `/api/links/:id`                    | Administrador; consultar / alterar / excluir             |
+| GET                  | `/api/links/:id/stats`              | Administrador; estatísticas do link                      |
+| GET / POST           | `/api/usuarios`                     | Administrador; listar / criar                            |
+| GET / PATCH / DELETE | `/api/usuarios/:id`                 | Administrador; consultar / alterar / excluir             |
+| GET / HEAD           | `/:urlCurta`                        | Público; redirect HTTP 302                               |
+| GET / HEAD           | `/links/redirecionar/:urlCurta`     | Compatibilidade com URLs antigas                         |
+| GET / HEAD           | `/api/links/redirecionar/:urlCurta` | Alias público de redirect                                |
+| POST                 | `/collect`                          | Compatibilidade de coleta; exige token temporário válido |
+
+Listagens recebem `pagina` (padrão 1), `limite` (padrão 10, máximo 100) e
+`filtro`. Retornam `itens`, `total`, `pagina`, `limite` e `totalPaginas`.
+
+Criação de link:
+
+```json
+{
+    "urlOriginal": "https://example.com/produto",
+    "urlCurta": "produto",
+    "expiraEm": null
+}
+```
+
+`urlOriginal` é obrigatória: HTTP/HTTPS, até 500 caracteres e sem credenciais.
+`urlCurta` é opcional na criação; aceita 3–50 letras ASCII, números, `_` e `-`,
+com distinção entre maiúsculas/minúsculas e rejeição de nomes reservados.
+Sem slug, gera 7 caracteres. PATCH também aceita `ativo`; `expiraEm` aceita data
+futura ou `null` para remover a expiração. `geo` permanece aceito por
+compatibilidade, mas não altera o redirect nem ativa captura no navegador.
+
+Usuários: criação recebe `nome`, `email`, `senha`, `ativo` e `administrador`;
+PATCH aceita esses campos parcialmente. E-mails são normalizados e senhas usam bcrypt.
+
+Autenticação via JWT de 1 hora no cookie `breve_sessao`, HttpOnly, SameSite=Strict
+e Secure em produção. As requisições autenticadas revalidam estado e versão de
+sessão no banco. Operações administrativas exigem `administrador=true`.
+
+## Persistência e coleta
+
+Tabelas principais: `usuarios`, `links` e `acessos`. Migrations versionadas em
+`api/src/migrations/`; testes usam SQLite em memória, com chaves estrangeiras
+habilitadas. O registro do acesso e o incremento do contador são transacionais.
+
+GET de link válido registra IP, cliente, referrer, headers técnicos e localização
+aproximada via GeoIP local. Bots e previews também contam; HEAD não registra.
+Links inexistentes retornam 404; inativos ou expirados, 410. Falhas de coleta não
+impedem o redirect. Não há página intermediária nem solicitação de geolocalização.
+
+`hashDispositivo` é SHA-256 de User-Agent, Accept-Language e Accept-Encoding.
+Não representa uma pessoa única; não é gerado com DNT=1, GPC=1 ou sem User-Agent.
+As estatísticas incluem distribuições, últimos 100 eventos e os 20 hashes mais
+frequentes, agregados sobre todo o histórico do link.
+
+O schema de coordenadas e os dados históricos foram preservados. `/collect`
+atualiza apenas o clique associado a um token de uso único ainda válido; novos
+redirects não emitem tokens. `geolocalizacao` nas estatísticas mantém contagens,
+estados, taxa de capturas sobre resultados recebidos e agrupamento aproximado
+por células de 0,01 grau. O painel exibe somente a localização aproximada por IP.
+A aplicação não acompanha a navegação no destino.
+
+## Organização do código
+
+No backend, rotas e controllers tratam HTTP, services coordenam regras de negócio
+e repositories concentram consultas ao banco. Utilitários de coleta montam os
+dados do acesso; o controller preserva o redirect em caso de falha.
+
+No frontend, páginas compõem a interface. Componentes e hooks específicos ficam
+em `app/src/funcionalidades/`; hooks de consulta controlam carregamento,
+cancelamento e erros. Elementos compartilhados ficam em `componentes/`.
+
+Use `npm run format` para aplicar a formatação e `npm run format:check` para
+verificá-la. Prettier e EditorConfig padronizam indentação e quebras de linha;
+ESLint exige blocos explícitos nos condicionais. Migrations existentes não são
+reformatadas.
+
+## Verificação
+
+```sh
+npm run format:check
 npm run typecheck
 npm run lint
 npm test -- --runInBand
-npm run test:web
+npm run test:app
+npm run build
 ```
 
-Consulte a [documentação da Fase 2](docs/FASE-2-MONOREPO.md) para a arquitetura,
-configuração do banco e execução de migrations na nova estrutura.
-O [guia da interface](docs/FASE-3-INTERFACE.md) descreve login, gerenciamento de links,
-estatísticas e execução local. Para executar frontend e API pelo Express, use
-`npm run build` seguido de `npm start` e abra o endereço definido em `APP_ORIGEM`.
-Consulte o [guia de integração](docs/FASE-4-INTEGRACAO.md) para rotas, cache e runtime.
-<p align="center">🔷</p>
+## Deploy na VPS compartilhada
 
+Veja [deploy/README.md](deploy/README.md) para Docker Compose e integração com o
+proxy compartilhado da VPS. O Compose usa `proxy`, `breve-link-http:6001` e a raiz de
+`https://breve-link.macb.tech`. `APP_CAMINHO_BASE` configura um prefixo opcional, como
+`/breve-link`, para painel, API, cookies e links curtos. `APP_ORIGEM` continua
+sendo somente a origem HTTPS. Alterar o prefixo exige recompilar o frontend.
 
-### ✒️ Contribuições
-Se deseja contribuir, relate problemas ou sugira melhorias abrindo uma 
-<a href="https://github.com/dev-macb/breve-link/issues">Issue</a> ou enviando um <em>Pull Request</em>. Se gostou do 
-projeto, deixe uma ⭐ para apoiar!
-<p align="center">🔷</p>
+## Deploy automático
 
+O fluxo de entrega usa `dev` para desenvolvimento e `main` para produção:
 
-### 📄 Licença
-O repositório <strong>breve-link</strong> utiliza a <strong>licença MIT</strong> em todo seu código, confira suas 
-condições em <a href="https://github.com/dev-macb/breve-link/blob/main/LICENSE">LICENSE</a>.
-<p align="center">🔷</p>
+1. Enviar as alterações para `dev` e abrir um pull request para `main`.
+2. Aguardar as verificações de código, os testes e o build no GitHub Actions.
+3. Fazer o merge para iniciar o deploy automático na VPS.
+
+O deploy publica o commit aprovado pelo CI e só conclui após os contêineres
+ficarem saudáveis. Pushes em `dev` e pull requests executam as verificações,
+sem publicar em produção.
+
+Consulte [DEPLOY.md](DEPLOY.md) para configurar os secrets SSH, o environment
+`production` e os pré-requisitos do servidor antes do primeiro merge.
