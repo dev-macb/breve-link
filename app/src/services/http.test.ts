@@ -9,6 +9,7 @@ describe('Cliente HTTP autenticado', () => {
     });
     afterEach(() => {
         vi.unstubAllGlobals();
+        vi.unstubAllEnvs();
         vi.resetAllMocks();
     });
 
@@ -21,6 +22,13 @@ describe('Cliente HTTP autenticado', () => {
         expect(new Headers(opcoes?.headers).get('X-Breve-CSRF')).toBe('1');
         expect(new Headers(opcoes?.headers).get('Content-Type')).toBe('application/json');
         expect(new Headers(opcoes?.headers).get('Authorization')).toBeNull();
+    });
+
+    it('envia a API para o prefixo da aplicação', async () => {
+        vi.stubEnv('BASE_URL', '/breve-link/');
+        buscar.mockResolvedValue(Response.json({ status: 'ok' }));
+        await http('/saude');
+        expect(buscar.mock.calls[0][0]).toBe('/breve-link/api/saude');
     });
 
     it('nao adiciona CSRF ou corpo em consulta de leitura', async () => {

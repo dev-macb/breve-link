@@ -8,13 +8,18 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, raiz, '');
     const destino = env.WEB_API_DESTINO || 'http://127.0.0.1:3000';
 
+    const caminhoBase = env.APP_CAMINHO_BASE || '';
+    if (caminhoBase && !/^\/[a-zA-Z0-9_-]+(?:\/[a-zA-Z0-9_-]+)*$/.test(caminhoBase)) {
+        throw new Error('APP_CAMINHO_BASE inválido');
+    }
     const proxy = {
-        '/api': { target: destino, changeOrigin: true },
-        '/links/redirecionar/': { target: destino, changeOrigin: true }
+        [caminhoBase + '/api']: { target: destino, changeOrigin: true },
+        [caminhoBase + '/links/redirecionar/']: { target: destino, changeOrigin: true }
     };
 
     return {
         envDir: raiz,
+        base: caminhoBase + '/',
         plugins: [react(), tailwindcss()],
         server: {
             host: 'localhost',

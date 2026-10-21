@@ -24,6 +24,7 @@ Copie `.env.example` para `.env` na raiz e configure:
 | `NODE_ENV`                   | `development`, `test` ou `production`                              |
 | `APP_HOST`, `APP_PORTA`      | Escuta HTTP; padrões `0.0.0.0` e `3000`                            |
 | `APP_ORIGEM`                 | Origem pública exata, sem barra final; HTTPS em produção           |
+| `APP_CAMINHO_BASE`           | Prefixo opcional sem barra final; vazio na raiz ou `/breve-link`   |
 | `JWT_SEGREDO`                | Segredo de sessão com pelo menos 32 bytes aleatórios               |
 | `ADMIN_EMAIL`, `ADMIN_SENHA` | Bootstrap do administrador; senha de 8 caracteres a 72 bytes UTF-8 |
 | `BD_ARQUIVO`                 | Arquivo SQLite; padrão `database/base.sqlite`, relativo à raiz     |
@@ -161,3 +162,10 @@ npm test -- --runInBand
 npm run test:app
 npm run build
 ```
+
+## Deploy na VPS compartilhada
+
+Veja [deploy/README.md](deploy/README.md) para Docker Compose e integração com o
+proxy compartilhado da VPS. `APP_CAMINHO_BASE` configura um prefixo opcional, como
+`/breve-link`, para painel, API, cookies e links curtos. `APP_ORIGEM` continua
+sendo somente a origem HTTPS. Alterar o prefixo exige recompilar o frontend.

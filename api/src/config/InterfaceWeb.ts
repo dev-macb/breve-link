@@ -1,3 +1,4 @@
+import { CAMINHO_BASE } from './CaminhoBase';
 import express, { ErrorRequestHandler, RequestHandler } from 'express';
 import path from 'path';
 import { existsSync } from 'fs';
@@ -64,16 +65,16 @@ export const erroPublico: ErrorRequestHandler = (erro, req, res, next) => {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>${titulo} — Breve Link</title>
-    <script src="/tema.js"></script>
-    <link rel="stylesheet" href="/erro.css">
+    <script src="${CAMINHO_BASE}/tema.js"></script>
+    <link rel="stylesheet" href="${CAMINHO_BASE}/erro.css">
 </head>
 <body>
     <main aria-labelledby="pagina-titulo">
         <div class="public-panel">
-            <a class="marca" href="/" aria-label="Breve Link, início"><span class="marca-simbolo" aria-hidden="true">[b]</span><span>breve-link<span class="marca-ponto">/</span></span></a>
+            <a class="marca" href="${CAMINHO_BASE}/" aria-label="Breve Link, início"><span class="marca-simbolo" aria-hidden="true">[b]</span><span>breve-link<span class="marca-ponto">/</span></span></a>
             <h1 id="pagina-titulo">${titulo}</h1>
             <p>${mensagem}</p>
-            <a class="public-page-action" href="/">Voltar ao início</a>
+            <a class="public-page-action" href="${CAMINHO_BASE}/">Voltar ao início</a>
         </div>
     </main>
 </body>

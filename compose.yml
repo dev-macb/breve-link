@@ -1,0 +1,36 @@
+services:
+    breve-link:
+        build:
+            context: .
+            args:
+                APP_CAMINHO_BASE: /breve-link
+        restart: unless-stopped
+        init: true
+        env_file: .env
+        environment:
+            NODE_ENV: production
+            APP_HOST: 0.0.0.0
+            APP_PORTA: 3000
+            APP_CAMINHO_BASE: /breve-link
+            BD_ARQUIVO: /app/database/base.sqlite
+            TRUST_PROXY: ${TRUST_PROXY:?Defina o IP ou CIDR do proxy autorizado pela VPS}
+        volumes:
+            - type: bind
+              source: /srv/data/breve-link
+              target: /app/database
+              bind:
+                  create_host_path: false
+        networks:
+            proxy:
+                aliases:
+                    - breve-link
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+                max-file: '3'
+
+networks:
+    proxy:
+        external: true
+        name: vps-proxy

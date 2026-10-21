@@ -1,3 +1,4 @@
+import { CAMINHO_BASE } from './CaminhoBase';
 import { CookieOptions } from 'express';
 
 export const NOME_COOKIE = 'breve_sessao';
@@ -7,6 +8,6 @@ export function opcoesCookie(): CookieOptions {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        path: '/'
+        path: CAMINHO_BASE || '/'
     };
 }

@@ -19,10 +19,11 @@ import { ILinkValidator } from './interfaces';
 import { AutenticacaoMiddleware } from './middlewares/AutenticacaoMiddleware';
 import { SlugUtil } from './utils/SlugUtil';
 import { interfaceWeb, erroPublico } from './config/InterfaceWeb';
-
 import { GeolocalizacaoService } from './services/GeolocalizacaoService';
+import { CAMINHO_BASE } from './config/CaminhoBase';
 
 const servidor = express();
+const rotas = express.Router();
 // Configurar somente os proxies realmente presentes na implantação.
 if (process.env.TRUST_PROXY) {
     servidor.set(
@@ -59,7 +60,7 @@ servidor.use(
 );
 servidor.use(express.json({ limit: '32kb' }));
 servidor.use(cookieParser());
-servidor.post(
+rotas.post(
     '/collect',
     rateLimit({ windowMs: 60000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false }),
     async (req, res) => {
@@ -67,7 +68,7 @@ servidor.post(
         res.status(204).end();
     }
 );
-servidor.use(
+rotas.use(
     '/api',
     rateLimit({
         windowMs: 60 * 1000,
@@ -78,21 +79,23 @@ servidor.use(
     }),
     CsrfMiddleware
 );
-servidor.get('/api/saude', async (_req, res) => {
+rotas.get('/api/saude', async (_req, res) => {
     await Knex.raw('SELECT 1');
     res.json({ status: 'ok' });
 });
-servidor.get('/api/configuracao', AutenticacaoMiddleware.Autenticado, (_req, res) => {
-    res.set('Cache-Control', 'no-store').json({ origemPublica: process.env.APP_ORIGEM });
+rotas.get('/api/configuracao', AutenticacaoMiddleware.Autenticado, (_req, res) => {
+    res.set('Cache-Control', 'no-store').json({
+        origemPublica: process.env.APP_ORIGEM + CAMINHO_BASE
+    });
 });
-servidor.use('/api/auth', autenticacaoRouter);
-servidor.use('/api/usuarios', usuarioRouter);
-servidor.use('/api/links', linkRouter);
-servidor.use('/api/links', acessoRouter);
-servidor.use('/api', (_req, _res, next) => next(new RecursoNaoEncontrado('Rota não encontrada')));
+rotas.use('/api/auth', autenticacaoRouter);
+rotas.use('/api/usuarios', usuarioRouter);
+rotas.use('/api/links', linkRouter);
+rotas.use('/api/links', acessoRouter);
+rotas.use('/api', (_req, _res, next) => next(new RecursoNaoEncontrado('Rota não encontrada')));
 // Compatibilidade com URLs públicas compartilhadas antes da refatoração.
 const controllerRedirect = container.get<LinkController>(TIPOS.LinkController);
-servidor.get(
+rotas.get(
     '/links/redirecionar/:urlCurta',
     rateLimit({
         windowMs: 60 * 1000,
@@ -104,9 +107,9 @@ servidor.get(
     container.get<ILinkValidator>(TIPOS.ILinkValidator).redirecionar(),
     controllerRedirect.redirecionar.bind(controllerRedirect)
 );
-servidor.use(interfaceWeb());
+rotas.use(interfaceWeb());
 // A interface usa a origem pública configurada, inclusive no desenvolvimento.
-servidor.get(
+rotas.get(
     '/:urlCurta',
     (req, res, next) => {
         if (!SlugUtil.permitido(req.params.urlCurta)) {
@@ -123,7 +126,9 @@ servidor.get(
     }),
     controllerRedirect.redirecionar.bind(controllerRedirect)
 );
-servidor.use((_req, _res, next) => next(new RecursoNaoEncontrado('Rota não encontrada')));
-servidor.use(erroPublico);
+rotas.use((_req, _res, next) => next(new RecursoNaoEncontrado('Rota não encontrada')));
+rotas.use(erroPublico);
+servidor.use(CAMINHO_BASE || '/', rotas);
+// Erros anteriores ao router (JSON, CORS) também recebem o contrato JSON.
 servidor.use(ErroMiddleware);
 export { servidor };

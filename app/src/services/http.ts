@@ -16,7 +16,7 @@ export async function http<T>(caminho: string, opcoes: RequestInit = {}): Promis
             headers.set('Content-Type', 'application/json');
         }
     }
-    const resposta = await fetch('/api' + caminho, {
+    const resposta = await fetch(import.meta.env.BASE_URL + 'api' + caminho, {
         ...opcoes,
         method: metodo,
         credentials: 'include',
