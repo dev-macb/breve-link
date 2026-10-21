@@ -1,60 +1,64 @@
-# Deploy automático na main
+# Deploy automático
 
-O workflow `.github/workflows/ci.yml` valida os pushes e pull requests. Somente
-um push na `main` (incluindo merge de PR) publica na VPS, após todas as
-verificações passarem. Proteger a `main` exigindo o job `build-e-testes` evita
-merges com CI falhando. Push direto na main também dispara deploy.
+## Pipeline
 
-## Configuração única no GitHub
+Arquivo: `.github/workflows/ci.yml`.
 
-Em cada repositório, criar o environment `production`, restringir a branch a
-`main` e cadastrar estes secrets (Settings → Environments → production):
+| Evento                  | CI  | Deploy         |
+| ----------------------- | --- | -------------- |
+| Push em qualquer branch | Sim | Somente `main` |
+| Pull request            | Sim | Não            |
+| `workflow_dispatch`     | Sim | Somente `main` |
 
-| Secret            | Valor                                                       |
-| ----------------- | ----------------------------------------------------------- |
-| `VPS_HOST`        | `187.77.63.198`                                             |
-| `VPS_USER`        | `macb`                                                      |
-| `VPS_PORT`        | Porta SSH; opcional, padrão `22`                            |
-| `VPS_SSH_KEY`     | Chave privada exclusiva para o deploy, sem senha            |
-| `VPS_KNOWN_HOSTS` | Linha de known_hosts da VPS, verificada por canal confiável |
+O deploy depende de `build-e-testes`, usa o environment `production` e não cancela uma execução em andamento. O CI executa as verificações da aplicação, `bash -n .github/scripts/deploy.sh` e build da imagem Docker.
 
-Adicionar a chave pública correspondente ao `~/.ssh/authorized_keys` do usuário
-na VPS. A chave privada fica somente no GitHub. Confirmar a impressão digital
-da chave do servidor pelo console da Hostinger antes de cadastrar known_hosts;
-para porta diferente de 22, o registro deve usar `[host]:porta`.
-Para publicação automática, o environment não pode exigir aprovação manual.
+## GitHub
 
-## Preparação da VPS
+Criar o environment `production`, restringir a `main` e configurar:
 
-O usuário SSH precisa de Git, Bash, `flock`, Docker e Docker Compose com suporte
-a `up --wait --wait-timeout`, acesso ao Docker sem sudo interativo e escrita no
-checkout `/srv/apps/breve-link` e no próprio home. Os dois projetos devem usar o
-mesmo usuário, pois compartilham o lock de build para a VPS de 1 CPU.
+| Secret            | Conteúdo                                         |
+| ----------------- | ------------------------------------------------ |
+| `VPS_HOST`        | `187.77.63.198`                                  |
+| `VPS_USER`        | `macb`                                           |
+| `VPS_PORT`        | Porta SSH; padrão `22`                           |
+| `VPS_SSH_KEY`     | Chave privada de deploy sem senha                |
+| `VPS_KNOWN_HOSTS` | Chave pública do servidor em formato known_hosts |
 
-O checkout deve estar limpo, na branch `main`, com o remoto `origin` apontando
-para este repositório. Conferir e preservar alterações locais antes de trocar
-de branch; não executar reset ou clean para preparar o servidor. Se o repositório
-for privado, configurar uma deploy key de leitura na VPS para o fetch do GitHub;
-essa credencial é independente da chave usada pelo Actions para entrar na VPS.
+Instalar a chave pública de deploy em `~/.ssh/authorized_keys` na VPS. Verificar a impressão digital do servidor pelo console da Hostinger; para porta não padrão, usar `[host]:porta` no known_hosts. SSH usa `StrictHostKeyChecking=yes` e autenticação não interativa.
 
-Manter `.env`, rede `proxy`, diretórios de dados e permissões conforme a
-documentação da aplicação. Fazer backup consistente dos dados antes da primeira
-publicação. O workflow não transfere arquivos de ambiente nem altera Nginx/TLS.
+Para deploy sem intervenção, desabilitar aprovação manual no environment. Proteger `main` exigindo `build-e-testes`. Push direto em `main` também publica após CI aprovado.
 
-## Execução e falhas
+## VPS
 
-O Actions envia `.github/scripts/deploy.sh` por SSH e informa o SHA que passou
-no CI. O script exige checkout limpo na main, faz fetch explícito da main e
-ignora execuções cujo SHA já foi substituído por outro push. Atualiza somente
-por fast-forward, valida o Compose recebido, compila e aguarda a saúde dos
-contêineres por até 180 segundos. Erros fazem o job falhar. Builds das duas
-aplicações são serializados na VPS; um deploy em andamento não é cancelado.
+- Checkout: `/srv/apps/breve-link`, branch `main`, árvore limpa e `origin` correspondente ao repositório.
+- Git, Bash, `flock`, Docker e Compose com `--wait` e `--wait-timeout`.
+- Acesso Docker sem sudo interativo; escrita no checkout e no home.
+- `.env` configurado, rede externa `proxy` e `/srv/data/breve-link` com permissões para o usuário da imagem.
+- Repositório privado: credencial de leitura do GitHub na VPS para `git fetch`.
+- Mesmo usuário SSH nos dois projetos para compartilhar `$HOME/.hostinger-deploy.lock`.
 
-Sem rollback ou backup automático. Migrations da aplicação podem modificar o
-banco: em falha, investigar logs na VPS e restaurar versão e banco compatíveis
-conforme o procedimento operacional. O healthcheck verifica o contêiner; validar
-também o domínio HTTPS após a primeira publicação.
+## Execução
 
-Após enviar estes arquivos e fazer merge na main, acompanhar Actions → CI e
-deploy → deploy. Enquanto os secrets e o checkout da VPS não estiverem prontos,
-a publicação falhará explicitamente, sem solicitar senha interativa.
+1. Actions envia `.github/scripts/deploy.sh` por SSH com `GITHUB_SHA`.
+2. O script adquire o lock compartilhado; espera até 1.800 segundos.
+3. Verifica branch, árvore Git, `.env`, diretório de dados, Docker, rede e suporte do Compose.
+4. Busca `origin/main`; ignora a execução se o SHA solicitado não for mais o topo remoto.
+5. Atualiza o checkout por fast-forward e confirma o SHA.
+6. Valida o Compose e compila a imagem.
+7. Executa `docker compose up -d --no-build --wait --wait-timeout 180`.
+8. Exibe o estado dos serviços. Falhas retornam código diferente de zero.
+
+## Reexecução
+
+Em Actions → CI e deploy → Run workflow, selecionar `main`. A execução refaz CI e build antes do deploy. Selecionar outra branch executa apenas CI.
+
+## Limitações
+
+- Sem configuração automática de secrets, SSH ou environment.
+- Sem transferência de `.env`, criação de rede/dados ou alteração de Nginx/TLS.
+- Sem backup ou rollback automático; migrations podem alterar o banco.
+- Healthcheck interno; não verifica DNS ou acesso HTTPS público.
+- O SHA é comparado ao topo remoto antes do build; um push posterior será publicado por outra execução.
+- Build na VPS usa tags e dependências do Dockerfile; não transfere a imagem construída no CI.
+
+Em falha, consultar Actions e `docker compose ps` na VPS. Fazer backup consistente antes da publicação; restaurar código e banco compatíveis quando necessário.

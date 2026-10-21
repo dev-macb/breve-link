@@ -4,6 +4,7 @@ on:
     push:
         branches: ['**']
     pull_request:
+    workflow_dispatch:
 
 permissions:
     contents: read
@@ -25,9 +26,14 @@ jobs:
             - run: npm run build
             - run: npm test -- --runInBand
 
+            - name: Validar script de deploy
+              run: bash -n .github/scripts/deploy.sh
+            - name: Validar imagem de produção
+              run: docker build --tag breve-link:ci .
+
     deploy:
         needs: build-e-testes
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
         timeout-minutes: 60
         environment: production
@@ -36,6 +42,9 @@ jobs:
             cancel-in-progress: false
         steps:
             - uses: actions/checkout@v4
+            - name: Validar branch de produção
+              shell: bash
+              run: test "$GITHUB_REF" = refs/heads/main
             - name: Preparar acesso SSH
               env:
                   SSH_HOST: ${{ secrets.VPS_HOST }}
