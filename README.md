@@ -166,6 +166,7 @@ npm run build
 ## Deploy na VPS compartilhada
 
 Veja [deploy/README.md](deploy/README.md) para Docker Compose e integração com o
-proxy compartilhado da VPS. `APP_CAMINHO_BASE` configura um prefixo opcional, como
+proxy compartilhado da VPS. O Compose usa `proxy`, `breve-link-http:6001` e a raiz de
+`https://breve-link.macb.tech`. `APP_CAMINHO_BASE` configura um prefixo opcional, como
 `/breve-link`, para painel, API, cookies e links curtos. `APP_ORIGEM` continua
 sendo somente a origem HTTPS. Alterar o prefixo exige recompilar o frontend.
