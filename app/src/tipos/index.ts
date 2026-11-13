@@ -80,7 +80,7 @@ export interface Estatisticas {
         dnt: string | null;
         gpc: string | null;
     }[];
-    link: Pick<LinkCurto, 'id' | 'urlOriginal' | 'urlCurta' | 'criadoEm'>;
+    link: Pick<LinkCurto, 'id' | 'urlOriginal' | 'urlCurta' | 'criadoEm'> & { qrCode: string };
     totalAcessos: number;
     acessosPorDia: { data: string; acessos: number }[];
     dispositivos: {

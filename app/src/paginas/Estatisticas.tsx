@@ -1,4 +1,5 @@
 import { Breadcrumb } from '../componentes/Breadcrumb';
+import { QrCodeLink } from '../funcionalidades/links/QrCodeLink';
 import { useEstatisticas } from '../funcionalidades/estatisticas/useEstatisticas';
 import { Distribuicao } from '../funcionalidades/estatisticas/Distribuicao';
 import { EventosAcesso } from '../funcionalidades/estatisticas/EventosAcesso';
@@ -100,6 +101,7 @@ export function EstatisticasPagina() {
                 </div>
                 <small>Criado em {dataCurta(dados.link.criadoEm)}</small>
             </div>
+            <QrCodeLink imagem={dados.link.qrCode} slug={dados.link.urlCurta} />
             <section className="console-counters" aria-label="Resumo dos acessos">
                 <div>
                     <span>ACESSOS / TOTAL</span>

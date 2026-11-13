@@ -44,7 +44,18 @@ const req = {
     get: jest.fn()
 } as unknown as Request;
 describe('LinkController', () => {
-    beforeEach(() => jest.resetAllMocks());
+    const origemAnterior = process.env.APP_ORIGEM;
+    beforeEach(() => {
+        jest.resetAllMocks();
+        process.env.APP_ORIGEM = 'https://breve.example';
+    });
+    afterEach(() => {
+        if (origemAnterior === undefined) {
+            delete process.env.APP_ORIGEM;
+        } else {
+            process.env.APP_ORIGEM = origemAnterior;
+        }
+    });
     it('retorna pagina de links', async () => {
         const pagina = { itens: [link], total: 1, pagina: 1, limite: 10, totalPaginas: 1 };
         servico.obterTodos.mockResolvedValue(pagina);
@@ -58,7 +69,11 @@ describe('LinkController', () => {
             servico[metodo].mockResolvedValue(link);
             const res = resposta();
             await controller[metodo](req, res);
-            expect(res.json).toHaveBeenCalledWith(link);
+            expect(res.json).toHaveBeenCalledWith(
+                metodo === 'remover'
+                    ? link
+                    : { ...link, qrCode: expect.stringMatching(/^data:image\/png;base64,/) }
+            );
             if (metodo === 'cadastrar') {
                 expect(res.status).toHaveBeenCalledWith(201);
             }

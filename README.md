@@ -2,6 +2,18 @@
 
 Encurtador de URLs com painel administrativo e estatísticas locais em SQLite.
 
+## QR Code dos links
+
+Ao criar um link, a API retorna automaticamente `qrCode`, uma imagem PNG em data URL.
+O código aponta para o endereço curto público (`APP_ORIGEM` + `APP_CAMINHO_BASE` + slug),
+mantendo o redirecionamento e a coleta de acessos habituais.
+A tela de detalhes exibe o código e permite baixá-lo como PNG para compartilhamento.
+Links existentes também recebem QR Code, sem migração de banco. A imagem é derivada
+do endereço atual nas respostas de criação, consulta individual, edição e estatísticas;
+alterações do slug ou da origem pública refletem nas próximas consultas.
+Imagens já compartilhadas com o endereço anterior deixam de funcionar se o slug mudar.
+O QR Code é gerado localmente na API, sem serviço externo.
+
 ## Stack
 
 - `api/`: Node.js, TypeScript, Express 5, Inversify, Knex e SQLite.

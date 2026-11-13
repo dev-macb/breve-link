@@ -5,6 +5,7 @@ import { IId, IFiltros, ILinkService } from '../interfaces';
 import { AtualizarLinkDto, CadastrarLinkDto, RedirecionarLinkDto, Link } from '../models';
 import { ColetaAcessoUtil } from '../utils/ColetaAcessoUtil';
 import { logger } from '../config/Logger';
+import { QrCodeUtil } from '../utils/QrCodeUtil';
 import { RecursoNaoEncontrado, LinkIndisponivel } from '../erros';
 
 @injectable()
@@ -25,17 +26,18 @@ export class LinkController {
         if (!link) {
             throw new RecursoNaoEncontrado('Link não encontrado');
         }
-        return res.json(link);
+        return res.json({ ...link, qrCode: await QrCodeUtil.gerar(link.urlCurta) });
     }
     async cadastrar(req: Request<{}, {}, CadastrarLinkDto>, res: Response): Promise<Response> {
-        return res.status(201).json(await this.linkService.cadastrar(req.body));
+        const link = await this.linkService.cadastrar(req.body);
+        return res.status(201).json({ ...link, qrCode: await QrCodeUtil.gerar(link.urlCurta) });
     }
     async atualizar(req: Request<IId, {}, AtualizarLinkDto>, res: Response): Promise<Response> {
         const link = await this.linkService.atualizar(req.params.id!, req.body);
         if (!link) {
             throw new RecursoNaoEncontrado('Link não encontrado');
         }
-        return res.json(link);
+        return res.json({ ...link, qrCode: await QrCodeUtil.gerar(link.urlCurta) });
     }
     async remover(req: Request<IId>, res: Response): Promise<Response> {
         const link = await this.linkService.remover(req.params.id!);
