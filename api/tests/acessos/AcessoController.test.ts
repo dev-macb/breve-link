@@ -8,12 +8,15 @@ const req = { params: { id: 1 } } as unknown as Request;
 describe('AcessoController', () => {
     beforeEach(() => jest.resetAllMocks());
     it('retorna as estatisticas', async () => {
-        const stats = { totalAcessos: 3 } as any;
+        const stats = { totalAcessos: 3, link: { urlCurta: 'abc123' } } as any;
         servico.obterEstatisticas.mockResolvedValue(stats);
         const res = { json: jest.fn() } as unknown as Response;
         await controller.obterEstatisticas(req, res);
         expect(servico.obterEstatisticas).toHaveBeenCalledWith(1);
-        expect(res.json).toHaveBeenCalledWith(stats);
+        expect(res.json).toHaveBeenCalledWith({
+            ...stats,
+            link: { ...stats.link, qrCode: expect.stringMatching(/^data:image\/png;base64,/) }
+        });
     });
     it('propaga 404 para link inexistente', async () => {
         servico.obterEstatisticas.mockResolvedValue(null);

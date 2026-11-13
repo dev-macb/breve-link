@@ -1,0 +1,33 @@
+.link-qr-code {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.link-qr-code img {
+    flex: 0 0 auto;
+    max-width: 100%;
+    height: auto;
+    background: #fff;
+}
+
+.link-qr-code h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.link-qr-code p {
+    color: var(--muted);
+    margin: 0 0 16px;
+}
+
+@media (max-width: 600px) {
+    .link-qr-code {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

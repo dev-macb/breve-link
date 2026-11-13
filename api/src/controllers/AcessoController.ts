@@ -3,6 +3,7 @@ import { TIPOS } from '../config/Constantes';
 import { inject, injectable } from 'inversify';
 import { IAcessoService, IId } from '../interfaces';
 import { RecursoNaoEncontrado } from '../erros';
+import { QrCodeUtil } from '../utils/QrCodeUtil';
 
 @injectable()
 export class AcessoController {
@@ -12,6 +13,12 @@ export class AcessoController {
         if (!estatisticas) {
             throw new RecursoNaoEncontrado('Link não encontrado');
         }
-        return res.json(estatisticas);
+        return res.json({
+            ...estatisticas,
+            link: {
+                ...estatisticas.link,
+                qrCode: await QrCodeUtil.gerar(estatisticas.link.urlCurta)
+            }
+        });
     }
 }

@@ -58,7 +58,11 @@ describe('LinkController', () => {
             servico[metodo].mockResolvedValue(link);
             const res = resposta();
             await controller[metodo](req, res);
-            expect(res.json).toHaveBeenCalledWith(link);
+            expect(res.json).toHaveBeenCalledWith(
+                metodo === 'remover'
+                    ? link
+                    : { ...link, qrCode: expect.stringMatching(/^data:image\/png;base64,/) }
+            );
             if (metodo === 'cadastrar') {
                 expect(res.status).toHaveBeenCalledWith(201);
             }
