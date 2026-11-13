@@ -6,7 +6,18 @@ const servico = { obterEstatisticas: jest.fn() } as jest.Mocked<IAcessoService>;
 const controller = new AcessoController(servico);
 const req = { params: { id: 1 } } as unknown as Request;
 describe('AcessoController', () => {
-    beforeEach(() => jest.resetAllMocks());
+    const origemAnterior = process.env.APP_ORIGEM;
+    beforeEach(() => {
+        jest.resetAllMocks();
+        process.env.APP_ORIGEM = 'https://breve.example';
+    });
+    afterEach(() => {
+        if (origemAnterior === undefined) {
+            delete process.env.APP_ORIGEM;
+        } else {
+            process.env.APP_ORIGEM = origemAnterior;
+        }
+    });
     it('retorna as estatisticas', async () => {
         const stats = { totalAcessos: 3, link: { urlCurta: 'abc123' } } as any;
         servico.obterEstatisticas.mockResolvedValue(stats);
