@@ -21,16 +21,12 @@ import { SlugUtil } from './utils/SlugUtil';
 import { interfaceWeb, erroPublico } from './config/InterfaceWeb';
 import { GeolocalizacaoService } from './services/GeolocalizacaoService';
 import { CAMINHO_BASE } from './config/CaminhoBase';
+import { validarProxy } from './config/Proxy';
 
 const servidor = express();
 const rotas = express.Router();
 // Configurar somente os proxies realmente presentes na implantação.
-if (process.env.TRUST_PROXY) {
-    servidor.set(
-        'trust proxy',
-        process.env.TRUST_PROXY.split(',').map((item) => item.trim())
-    );
-}
+servidor.set('trust proxy', validarProxy(process.env.TRUST_PROXY));
 servidor.disable('x-powered-by');
 servidor.use(
     helmet({
