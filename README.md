@@ -82,22 +82,22 @@ Corpos JSON. Mutações em `/api` exigem `X-Breve-CSRF: 1`; POST/PATCH também
 exigem `Content-Type: application/json`. Origens devem estar na configuração
 permitida. Clientes web devem enviar cookies (`credentials: 'include'`).
 
-| Método               | Rota                                | Acesso / função                                          |
-| -------------------- | ----------------------------------- | -------------------------------------------------------- |
-| GET                  | `/api/saude`                        | Público; testa conexão com o banco                       |
-| POST                 | `/api/auth/login`                   | Público; recebe `email` e `senha`                        |
-| GET                  | `/api/auth/me`                      | Autenticado; usuário atual                               |
-| POST                 | `/api/auth/logout`                  | Autenticado; revoga todas as sessões do usuário          |
-| GET                  | `/api/configuracao`                 | Autenticado; retorna `origemPublica`                     |
-| GET / POST           | `/api/links`                        | Administrador; listar / criar                            |
-| GET / PATCH / DELETE | `/api/links/:id`                    | Administrador; consultar / alterar / excluir             |
-| GET                  | `/api/links/:id/stats`              | Administrador; estatísticas do link                      |
-| GET / POST           | `/api/usuarios`                     | Administrador; listar / criar                            |
-| GET / PATCH / DELETE | `/api/usuarios/:id`                 | Administrador; consultar / alterar / excluir             |
-| GET / HEAD           | `/:urlCurta`                        | Público; redirect HTTP 302                               |
-| GET / HEAD           | `/links/redirecionar/:urlCurta`     | Compatibilidade com URLs antigas                         |
-| GET / HEAD           | `/api/links/redirecionar/:urlCurta` | Alias público de redirect                                |
-| POST                 | `/collect`                          | Compatibilidade de coleta; exige token temporário válido |
+| Método               | Rota                                | Acesso / função                                                |
+| -------------------- | ----------------------------------- | -------------------------------------------------------------- |
+| GET                  | `/api/saude`                        | Público; testa conexão com o banco                             |
+| POST                 | `/api/auth/login`                   | Público; recebe `email` e `senha`                              |
+| GET                  | `/api/auth/me`                      | Autenticado; usuário atual                                     |
+| POST                 | `/api/auth/logout`                  | Autenticado; revoga todas as sessões do usuário                |
+| GET                  | `/api/configuracao`                 | Autenticado; retorna `origemPublica`                           |
+| GET / POST           | `/api/links`                        | Autenticado; listar / criar                                    |
+| GET / PATCH / DELETE | `/api/links/:id`                    | Autenticado; consultar / alterar; excluir só por administrador |
+| GET                  | `/api/links/:id/stats`              | Autenticado; estatísticas do link                              |
+| GET / POST           | `/api/usuarios`                     | Listar: autenticado; criar: administrador                      |
+| GET / PATCH / DELETE | `/api/usuarios/:id`                 | Consultar: autenticado; alterar / excluir: administrador       |
+| GET / HEAD           | `/:urlCurta`                        | Público; redirect HTTP 302                                     |
+| GET / HEAD           | `/links/redirecionar/:urlCurta`     | Compatibilidade com URLs antigas                               |
+| GET / HEAD           | `/api/links/redirecionar/:urlCurta` | Alias público de redirect                                      |
+| POST                 | `/collect`                          | Compatibilidade de coleta; exige token temporário válido       |
 
 Listagens recebem `pagina` (padrão 1), `limite` (padrão 10, máximo 100) e
 `filtro`. Retornam `itens`, `total`, `pagina`, `limite` e `totalPaginas`.
@@ -178,6 +178,28 @@ npm run build
 ## Deploy na VPS compartilhada
 
 Veja [deploy/README.md](deploy/README.md) para Docker Compose e integração com o
-proxy compartilhado da VPS. `APP_CAMINHO_BASE` configura um prefixo opcional, como
+proxy compartilhado da VPS. O Compose usa `proxy`, `breve-link-http:6001` e a raiz de
+`https://breve-link.macb.tech`. `APP_CAMINHO_BASE` configura um prefixo opcional, como
 `/breve-link`, para painel, API, cookies e links curtos. `APP_ORIGEM` continua
 sendo somente a origem HTTPS. Alterar o prefixo exige recompilar o frontend.
+
+## Deploy automático
+
+O fluxo de entrega usa `dev` para desenvolvimento e `main` para produção:
+
+1. Enviar as alterações para `dev` e abrir um pull request para `main`.
+2. Aguardar as verificações de código, os testes e o build no GitHub Actions.
+3. Fazer o merge para iniciar o deploy automático na VPS.
+
+O deploy publica o commit aprovado pelo CI e só conclui após os contêineres
+ficarem saudáveis. Pushes em `dev` e pull requests executam as verificações,
+sem publicar em produção.
+
+Consulte [DEPLOY.md](DEPLOY.md) para configurar os secrets SSH, o environment
+`production` e os pré-requisitos do servidor antes do primeiro merge.
+
+### Gestão de usuários
+
+No menu do cabeçalho, acesse **Usuários**, abaixo de **Meus links**. A listagem permite buscar por nome ou e-mail. Clique na linha para abrir o cadastro; administradores podem cadastrar, editar dados, alterar tipo e estado, redefinir senha e remover usuários. Usuários comuns acessam os cadastros apenas para consulta.
+
+Usuários comuns podem consultar, criar e editar links e acessar estatísticas, mas não podem excluir links ou usuários. As permissões são aplicadas na interface e na API. Os links são compartilhados entre os usuários autenticados.

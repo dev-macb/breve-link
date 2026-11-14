@@ -1,11 +1,12 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { SessaoProvider, useSessao } from './Sessao';
 import { AvisosProvider } from './Avisos';
 import { Carregando, Falha, LinkIndisponivel, Marca, NaoEncontrado } from '../componentes/Comuns';
 import { Layout } from '../componentes/Layout';
 import { Login } from '../paginas/Login';
+const Usuarios = lazy(async () => ({ default: (await import('../paginas/Usuarios')).Usuarios }));
 const Dashboard = lazy(async () => ({ default: (await import('../paginas/Dashboard')).Dashboard }));
 const EstatisticasPagina = lazy(async () => ({
     default: (await import('../paginas/Estatisticas')).EstatisticasPagina
@@ -17,33 +18,7 @@ function Proteger() {
     if (!usuario) {
         return <Navigate to="/login" state={{ de: local.pathname + local.search }} replace />;
     }
-    if (!usuario.administrador) {
-        return <SemPermissao />;
-    }
     return <Outlet />;
-}
-function SemPermissao() {
-    const { sair } = useSessao();
-    const [erro, setErro] = useState('');
-    return (
-        <div className="standalone">
-            <Marca />
-            <Falha
-                texto={
-                    erro ||
-                    'Esta área é reservada a administradores. Peça acesso ao responsável pelo workspace.'
-                }
-            />
-            <button
-                className="button secondary"
-                onClick={() => {
-                    void sair().catch(() => setErro('Não foi possível sair. Tente novamente.'));
-                }}
-            >
-                Sair da conta
-            </button>
-        </div>
-    );
 }
 function EstadoSessao({ children }: { children: ReactNode }) {
     const { carregando, erro, restaurar } = useSessao();
@@ -78,9 +53,11 @@ function Rotas() {
                 ? 'Estatísticas'
                 : local.pathname === '/login'
                   ? 'Entrar'
-                  : local.pathname === '/indisponivel'
-                    ? 'Link indisponível'
-                    : 'Meus links') + ' — Breve Link';
+                  : local.pathname === '/usuarios'
+                    ? 'Usuários'
+                    : local.pathname === '/indisponivel'
+                      ? 'Link indisponível'
+                      : 'Meus links') + ' — Breve Link';
     }, [local.pathname]);
     return (
         <Routes>
@@ -100,6 +77,14 @@ function Rotas() {
                 }
             >
                 <Route element={<Layout />}>
+                    <Route
+                        path="/usuarios"
+                        element={
+                            <Suspense fallback={<Carregando />}>
+                                <Usuarios />
+                            </Suspense>
+                        }
+                    />
                     <Route
                         path="/dashboard"
                         element={

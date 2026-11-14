@@ -24,16 +24,21 @@ export function interfaceWeb(diretorio = DIRETORIO_WEB): RequestHandler {
             }
         })
     );
-    router.get(['/', '/login', '/dashboard', '/links/:id', '/indisponivel'], (req, res, next) => {
-        if (!req.accepts('html')) {
-            return next(new RecursoNaoEncontrado('Rota não encontrada'));
+    router.get(
+        ['/', '/login', '/dashboard', '/usuarios', '/links/:id', '/indisponivel'],
+        (req, res, next) => {
+            if (!req.accepts('html')) {
+                return next(new RecursoNaoEncontrado('Rota não encontrada'));
+            }
+            if (!existsSync(path.join(diretorio, 'index.html'))) {
+                return next(
+                    new RecursoNaoEncontrado('Interface não compilada; execute npm run build')
+                );
+            }
+            res.set('Cache-Control', 'no-store');
+            res.sendFile(path.join(diretorio, 'index.html'));
         }
-        if (!existsSync(path.join(diretorio, 'index.html'))) {
-            return next(new RecursoNaoEncontrado('Interface não compilada; execute npm run build'));
-        }
-        res.set('Cache-Control', 'no-store');
-        res.sendFile(path.join(diretorio, 'index.html'));
-    });
+    );
     return router;
 }
 

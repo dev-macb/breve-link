@@ -11,13 +11,13 @@ const usuarioValidator = container.get<IUsuarioValidator>(TIPOS.IUsuarioValidato
 
 usuarioRouter.get(
     '/',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     usuarioValidator.obterTodos(),
     usuarioController.obterTodos.bind(usuarioController)
 );
 usuarioRouter.get(
     '/:id',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     usuarioValidator.obterPorId(),
     usuarioController.obterPorId.bind(usuarioController)
 );

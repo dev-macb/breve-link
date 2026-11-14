@@ -15,7 +15,7 @@ import { enderecoCurto, estadoLink, numero } from '../utils/formatar';
 import type { LinkCurto } from '../tipos';
 
 export function Dashboard() {
-    const { origemPublica } = useSessao();
+    const { origemPublica, usuario } = useSessao();
     const aviso = useAviso();
     const [parametros, setParametros] = useSearchParams();
     const { filtro: busca, pagina, limite } = lerConsultaLinks(parametros);
@@ -67,7 +67,7 @@ export function Dashboard() {
         }
     }
     async function remover() {
-        if (!excluindo) {
+        if (!usuario?.administrador || !excluindo) {
             return;
         }
         setRemovendo(true);
@@ -189,6 +189,7 @@ export function Dashboard() {
                             {links.map((link) => {
                                 return (
                                     <LinhaLink
+                                        podeExcluir={!!usuario?.administrador}
                                         key={link.id}
                                         link={link}
                                         origemPublica={origemPublica}
@@ -256,7 +257,7 @@ export function Dashboard() {
                     salvo={salvo}
                 />
             )}
-            {excluindo && (
+            {usuario?.administrador && excluindo && (
                 <ConfirmarExclusaoLink
                     link={excluindo}
                     ocupado={removendo}

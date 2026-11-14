@@ -39,7 +39,7 @@ export function Layout() {
                     <span className="user-avatar">{usuario?.nome.slice(0, 2).toUpperCase()}</span>
                     <span className="user-info">
                         <strong>{usuario?.nome}</strong>
-                        <small>Administrador</small>
+                        <small>{usuario?.administrador ? 'Administrador' : 'Usuário comum'}</small>
                     </span>
                     <MenuConta tema={tema} alterarTema={setTema} saindo={saindo} sair={encerrar} />
                 </div>

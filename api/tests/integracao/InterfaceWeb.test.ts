@@ -28,7 +28,7 @@ describe('Integração de arquivos e páginas', () => {
     });
     afterAll(() => rmSync(diretorio, { recursive: true, force: true }));
 
-    it.each(['/', '/login', '/dashboard', '/links/12', '/indisponivel'])(
+    it.each(['/', '/login', '/dashboard', '/usuarios', '/links/12', '/indisponivel'])(
         'serve navegação direta em %s',
         async (rota) => {
             const res = await request(app).get(rota).set('Accept', 'text/html').expect(200);

@@ -152,7 +152,63 @@ describe('API integrada com SQLite', () => {
             })
             .expect(409);
         const comum = await entrar('novo@example.com');
-        await api().get('/api/links').set('Cookie', comum).expect(403);
+        await api().get('/api/links').set('Cookie', comum).expect(200);
+        const lista = await api().get('/api/usuarios').set('Cookie', comum).expect(200);
+        expect(lista.body.itens.length).toBeGreaterThan(0);
+        expect(lista.text).not.toMatch(/senha|versaoSessao/);
+        await api()
+            .get('/api/usuarios/' + usuario.body.id)
+            .set('Cookie', comum)
+            .expect(200);
+        const porEmail = await api()
+            .get('/api/usuarios?filtro=novo%40example.com')
+            .set('Cookie', comum)
+            .expect(200);
+        expect(porEmail.body.itens).toHaveLength(1);
+        for (const metodo of ['post', 'patch', 'delete'] as const) {
+            const caminho = '/api/usuarios' + (metodo === 'post' ? '' : '/' + usuario.body.id);
+            const cliente = api();
+            await cliente[metodo](caminho)
+                .set('Cookie', comum)
+                .set(csrf)
+                .send({ nome: 'Invadido', administrador: true })
+                .expect(403);
+        }
+        const link = await api()
+            .post('/api/links')
+            .set('Cookie', comum)
+            .set(csrf)
+            .send({ urlOriginal: 'https://example.com', urlCurta: 'permissoes-comum' })
+            .expect(201);
+        await api()
+            .get('/api/links/' + link.body.id)
+            .set('Cookie', comum)
+            .expect(200);
+        await api()
+            .get('/api/links/' + link.body.id + '/stats')
+            .set('Cookie', comum)
+            .expect(200);
+        await api()
+            .patch('/api/links/' + link.body.id)
+            .set('Cookie', comum)
+            .set(csrf)
+            .send({ urlOriginal: 'https://example.com/novo' })
+            .expect(200);
+        await api()
+            .delete('/api/links/' + link.body.id)
+            .set('Cookie', comum)
+            .set(csrf)
+            .expect(403);
+        expect(await Knex('links').where({ id: link.body.id }).first()).toBeDefined();
+        await api()
+            .delete('/api/links/' + link.body.id)
+            .set('Cookie', cookie)
+            .set(csrf)
+            .expect(200);
+        await api().get('/api/usuarios').expect(401);
+        await api()
+            .get('/api/usuarios/' + usuario.body.id)
+            .expect(401);
     });
 
     it('cria link, redireciona com 302, registra transacoes concorrentes e retorna stats', async () => {
@@ -392,7 +448,7 @@ describe('API integrada com SQLite', () => {
 
     it('reconsulta privilegios e revoga sessoes apos alteracao e logout', async () => {
         await Knex('usuarios').where({ id: administrador }).update({ administrador: false });
-        await api().get('/api/links').set('Cookie', cookie).expect(403);
+        await api().delete('/api/links/1').set('Cookie', cookie).set(csrf).expect(403);
         await Knex('usuarios').where({ id: administrador }).update({ administrador: true });
         await api()
             .patch('/api/usuarios/' + administrador)

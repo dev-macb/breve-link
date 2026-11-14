@@ -11,7 +11,7 @@ const acessoValidator = container.get<IAcessoValidator>(TIPOS.IAcessoValidator);
 
 acessoRouter.get(
     '/:id/stats',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     acessoValidator.obterEstatisticas(),
     acessoController.obterEstatisticas.bind(acessoController)
 );

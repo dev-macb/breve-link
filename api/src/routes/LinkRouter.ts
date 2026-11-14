@@ -16,25 +16,25 @@ linkRouter.get(
 );
 linkRouter.get(
     '/',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     linkValidator.obterTodos(),
     linkController.obterTodos.bind(linkController)
 );
 linkRouter.get(
     '/:id',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     linkValidator.obterPorId(),
     linkController.obterPorId.bind(linkController)
 );
 linkRouter.post(
     '/',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     linkValidator.cadastrar(),
     linkController.cadastrar.bind(linkController)
 );
 linkRouter.patch(
     '/:id',
-    AutenticacaoMiddleware.Administrador,
+    AutenticacaoMiddleware.Autenticado,
     linkValidator.atualizar(),
     linkController.atualizar.bind(linkController)
 );

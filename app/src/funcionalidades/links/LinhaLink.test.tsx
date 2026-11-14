@@ -14,10 +14,11 @@ const link: LinkCurto = {
     atualizadoEm: '2026-01-01T00:00:00Z'
 };
 
-function renderizar(alteracoes: Partial<LinkCurto> = {}, copiado = false) {
+function renderizar(alteracoes: Partial<LinkCurto> = {}, copiado = false, podeExcluir = true) {
     return renderToStaticMarkup(
         <MemoryRouter>
             <LinhaLink
+                podeExcluir={podeExcluir}
                 link={{ ...link, ...alteracoes }}
                 origemPublica="https://breve.example"
                 copiado={copiado}
@@ -30,6 +31,11 @@ function renderizar(alteracoes: Partial<LinkCurto> = {}, copiado = false) {
 }
 
 describe('Linha de link', () => {
+    it('oculta a exclusão para usuários comuns e preserva edição', () => {
+        const html = renderizar({}, false, false);
+        expect(html).not.toContain('Excluir link');
+        expect(html).toContain('Editar link');
+    });
     it('mantém o destino curto, as ações e o acesso às estatísticas', () => {
         const html = renderizar();
         expect(html).toContain('href="https://breve.example/produto"');
