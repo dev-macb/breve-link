@@ -4,6 +4,7 @@ import { dataCurta, dominio, enderecoCurto, estadoLink, numero } from '../../uti
 import type { LinkCurto } from '../../tipos';
 
 interface LinhaLinkProps {
+    podeExcluir: boolean;
     link: LinkCurto;
     origemPublica: string;
     copiado: boolean;
@@ -13,6 +14,7 @@ interface LinhaLinkProps {
 }
 
 export function LinhaLink({
+    podeExcluir,
     link,
     origemPublica,
     copiado,
@@ -80,16 +82,18 @@ export function LinhaLink({
                 >
                     <Pencil size={15} />
                 </button>
-                <button
-                    className="icon-button danger-hover"
-                    onClick={() => {
-                        excluir(link);
-                    }}
-                    title="Excluir link"
-                    aria-label={'Excluir link ' + link.urlCurta}
-                >
-                    <Trash2 size={15} />
-                </button>
+                {podeExcluir && (
+                    <button
+                        className="icon-button danger-hover"
+                        onClick={() => {
+                            excluir(link);
+                        }}
+                        title="Excluir link"
+                        aria-label={'Excluir link ' + link.urlCurta}
+                    >
+                        <Trash2 size={15} />
+                    </button>
+                )}
             </div>
         </div>
     );

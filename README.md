@@ -82,22 +82,22 @@ Corpos JSON. Mutações em `/api` exigem `X-Breve-CSRF: 1`; POST/PATCH também
 exigem `Content-Type: application/json`. Origens devem estar na configuração
 permitida. Clientes web devem enviar cookies (`credentials: 'include'`).
 
-| Método               | Rota                                | Acesso / função                                          |
-| -------------------- | ----------------------------------- | -------------------------------------------------------- |
-| GET                  | `/api/saude`                        | Público; testa conexão com o banco                       |
-| POST                 | `/api/auth/login`                   | Público; recebe `email` e `senha`                        |
-| GET                  | `/api/auth/me`                      | Autenticado; usuário atual                               |
-| POST                 | `/api/auth/logout`                  | Autenticado; revoga todas as sessões do usuário          |
-| GET                  | `/api/configuracao`                 | Autenticado; retorna `origemPublica`                     |
-| GET / POST           | `/api/links`                        | Administrador; listar / criar                            |
-| GET / PATCH / DELETE | `/api/links/:id`                    | Administrador; consultar / alterar / excluir             |
-| GET                  | `/api/links/:id/stats`              | Administrador; estatísticas do link                      |
-| GET / POST           | `/api/usuarios`                     | Administrador; listar / criar                            |
-| GET / PATCH / DELETE | `/api/usuarios/:id`                 | Administrador; consultar / alterar / excluir             |
-| GET / HEAD           | `/:urlCurta`                        | Público; redirect HTTP 302                               |
-| GET / HEAD           | `/links/redirecionar/:urlCurta`     | Compatibilidade com URLs antigas                         |
-| GET / HEAD           | `/api/links/redirecionar/:urlCurta` | Alias público de redirect                                |
-| POST                 | `/collect`                          | Compatibilidade de coleta; exige token temporário válido |
+| Método               | Rota                                | Acesso / função                                                |
+| -------------------- | ----------------------------------- | -------------------------------------------------------------- |
+| GET                  | `/api/saude`                        | Público; testa conexão com o banco                             |
+| POST                 | `/api/auth/login`                   | Público; recebe `email` e `senha`                              |
+| GET                  | `/api/auth/me`                      | Autenticado; usuário atual                                     |
+| POST                 | `/api/auth/logout`                  | Autenticado; revoga todas as sessões do usuário                |
+| GET                  | `/api/configuracao`                 | Autenticado; retorna `origemPublica`                           |
+| GET / POST           | `/api/links`                        | Autenticado; listar / criar                                    |
+| GET / PATCH / DELETE | `/api/links/:id`                    | Autenticado; consultar / alterar; excluir só por administrador |
+| GET                  | `/api/links/:id/stats`              | Autenticado; estatísticas do link                              |
+| GET / POST           | `/api/usuarios`                     | Listar: autenticado; criar: administrador                      |
+| GET / PATCH / DELETE | `/api/usuarios/:id`                 | Consultar: autenticado; alterar / excluir: administrador       |
+| GET / HEAD           | `/:urlCurta`                        | Público; redirect HTTP 302                                     |
+| GET / HEAD           | `/links/redirecionar/:urlCurta`     | Compatibilidade com URLs antigas                               |
+| GET / HEAD           | `/api/links/redirecionar/:urlCurta` | Alias público de redirect                                      |
+| POST                 | `/collect`                          | Compatibilidade de coleta; exige token temporário válido       |
 
 Listagens recebem `pagina` (padrão 1), `limite` (padrão 10, máximo 100) e
 `filtro`. Retornam `itens`, `total`, `pagina`, `limite` e `totalPaginas`.
@@ -197,3 +197,9 @@ sem publicar em produção.
 
 Consulte [DEPLOY.md](DEPLOY.md) para configurar os secrets SSH, o environment
 `production` e os pré-requisitos do servidor antes do primeiro merge.
+
+### Gestão de usuários
+
+No menu do cabeçalho, acesse **Usuários**, abaixo de **Meus links**. A listagem permite buscar por nome ou e-mail. Clique na linha para abrir o cadastro; administradores podem cadastrar, editar dados, alterar tipo e estado, redefinir senha e remover usuários. Usuários comuns acessam os cadastros apenas para consulta.
+
+Usuários comuns podem consultar, criar e editar links e acessar estatísticas, mas não podem excluir links ou usuários. As permissões são aplicadas na interface e na API. Os links são compartilhados entre os usuários autenticados.

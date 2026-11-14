@@ -1,0 +1,58 @@
+.users-console .user-grid {
+    grid-template-columns: minmax(140px, 1fr) minmax(180px, 1.4fr) 130px 80px;
+}
+.user-open {
+    background: none;
+    border: 0;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+}
+.user-open::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.user-open:focus-visible {
+    outline: 2px solid var(--accent);
+}
+.user-email {
+    overflow-wrap: anywhere;
+}
+.users-console .user-grid > div {
+    min-width: 0;
+}
+.users-console .row-actions {
+    margin: 0;
+}
+.users-console .user-grid > div:first-child {
+    overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+    .users-console .table-head {
+        display: none;
+    }
+    .users-console .user-grid {
+        grid-template-columns: minmax(0, 1fr) 100px;
+        gap: 10px;
+    }
+    .users-console .user-grid > [role='cell']:nth-child(2) {
+        grid-column: 1;
+        text-align: left;
+    }
+    .users-console .user-grid > [role='cell']:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 11px;
+    }
+    .users-console .row-actions {
+        grid-column: 2;
+        grid-row: 2;
+    }
+}
+.users-console .table-head > [role='columnheader'] {
+    display: block;
+}

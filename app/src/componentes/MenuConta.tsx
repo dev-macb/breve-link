@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, LogOut, Menu, Moon } from 'lucide-react';
+import { LayoutDashboard, LogOut, Menu, Moon, Users } from 'lucide-react';
 import '../estilos/menu-conta.css';
 
 interface MenuContaProps {
@@ -69,6 +69,16 @@ export function MenuConta({ tema, alterarTema, saindo, sair }: MenuContaProps) {
                     >
                         <LayoutDashboard size={16} aria-hidden="true" />
                         Meus links
+                    </NavLink>
+                    <NavLink
+                        to="/usuarios"
+                        className="account-menu-item"
+                        onClick={() => {
+                            menu.current!.open = false;
+                        }}
+                    >
+                        <Users size={16} aria-hidden="true" />
+                        Usuários
                     </NavLink>
                 </nav>
                 <button

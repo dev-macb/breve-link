@@ -10,19 +10,26 @@ import { Conflito, conflitoUnico } from '../erros';
 class UsuarioRepository implements IUsuarioRepository {
     async contar({ filtro = '' }: IFiltros): Promise<number> {
         const resultado = await Knex(ETabela.usuarios)
-            .where('nome', 'like', `%${filtro}%`)
+            .where((consulta) =>
+                consulta
+                    .where('nome', 'like', `%${filtro}%`)
+                    .orWhere('email', 'like', `%${filtro}%`)
+            )
             .count<{ total: number }>('* as total')
             .first();
         return Number(resultado?.total ?? 0);
     }
     async obterTodos(filtros: IFiltros): Promise<Usuario[]> {
         try {
-            const propriedadeAlvo = 'nome';
             const { pagina = 1, limite = 10, filtro = '' } = filtros;
 
             return await Knex<Usuario>(ETabela.usuarios)
                 .select('*')
-                .where(propriedadeAlvo, 'like', `%${filtro}%`)
+                .where((consulta) =>
+                    consulta
+                        .where('nome', 'like', `%${filtro}%`)
+                        .orWhere('email', 'like', `%${filtro}%`)
+                )
                 .orderBy('id', 'desc')
                 .offset((pagina - 1) * limite)
                 .limit(limite);
